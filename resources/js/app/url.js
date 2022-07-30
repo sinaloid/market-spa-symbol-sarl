@@ -1,7 +1,7 @@
-
+const ur = '/spa-market/public/'
 const url = {
-    'index': '/*',
-    'home': '/',
+    'index': ur + '/*',
+    'home': ur + '/',
     'produits': '/produits',
     'produits_detail': '/produit/:id',
     'faqs': '/faqs',
