@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect } from "react";
 import { Navigate, Routes } from "react-router-dom";
+import Client from "./components/Client";
 import { appRoutes, getRoute } from "./routes";
 
 const loader = document.querySelector(".preloader");
@@ -15,6 +16,7 @@ function App() {
     return (
         <div className="row">
             <Routes>
+            <Route key={idx} path="/*" element= {<Client />} />
                     {appRoutes.map((route, idx) => {
                         return getRoute(route, idx);
                     })}
