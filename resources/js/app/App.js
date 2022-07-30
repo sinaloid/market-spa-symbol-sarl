@@ -1,6 +1,5 @@
 import React, { Suspense, useEffect } from "react";
 import { Navigate, Routes } from "react-router-dom";
-import Client from "./components/Client";
 import { appRoutes, getRoute } from "./routes";
 
 const loader = document.querySelector(".preloader");

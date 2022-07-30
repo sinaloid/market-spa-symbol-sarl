@@ -32,6 +32,7 @@ import RecommandationVente from "./components/profile/contents/RecommandationVen
 const notFound = <NotFound />
 const appRoutes = [
   { path: url.index, element: <Client /> },
+  { path: url.home, element: <Client /> },
   { path: url.app_root, element: <Client /> },
   { path: url.dashboard_, element: <Dashboard /> },
   { path: url.app_dashboard_, element: <Dashboard /> },
