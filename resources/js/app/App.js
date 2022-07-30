@@ -18,7 +18,7 @@ function App() {
                     {appRoutes.map((route, idx) => {
                         return getRoute(route, idx);
                     })}
-                </Routes>
+            </Routes>
         </div>
     );
 }
