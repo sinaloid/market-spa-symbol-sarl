@@ -1,4 +1,4 @@
-const ur = '/spa-market/public/'
+const ur = '/spa-market/public'
 const url = {
     'index': ur + '/*',
     'home': ur + '/',
