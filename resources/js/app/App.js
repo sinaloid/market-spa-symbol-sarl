@@ -16,7 +16,6 @@ function App() {
     return (
         <div className="row">
             <Routes>
-                <Route path="/*" element= {<Client />} />
                     {appRoutes.map((route, idx) => {
                         return getRoute(route, idx);
                     })}
