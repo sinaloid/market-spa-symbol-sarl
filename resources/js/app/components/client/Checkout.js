@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { isMobile } from "react-device-detect";
 import logo from "../../assets/img/logo/logo.jpeg";
 import { AppContext } from "../../context/context";
 import apiClient from "../../services/api";
@@ -105,7 +106,14 @@ const Checkout = () => {
         /*SendPaymentInfos(order_number,agency_code,secure_code,domain_name,url_redirection_suc
             cess,url_redirection_failed,amount,city,email,clientFirstName,clientLastName,)*/
     };
+    const detectDevice = () =>{
+        if(isMobile){
+            alert("Mobile")
+        }else{
+            alert("Desktop")
 
+        }
+    }
     const handleOnClickShare = () => {
         if (navigator.share) {
           navigator
@@ -186,13 +194,14 @@ const Checkout = () => {
                                             <i className="fa fa-print"></i>{" "}
                                             Imprimer
                                         </button>
-                                        <a
-                                            href="#"
+                                        <Link
+                                            to="#"
                                             className="btn btn-afdefis ms-1 my-1"
+                                            onClick={()=>{detectDevice()}}
                                         >
                                             <i className="fa fa-file-pdf-o"></i>{" "}
                                             Export PDF
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                                 <div className="my-2">
