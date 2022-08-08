@@ -28,6 +28,8 @@ import ProductDetail from "./components/client/body/contents/ProductDetail";
 import NotFound from "./components/client/body/contents/not_found/NotFound";
 import Marque from "./components/profile/contents/Marque";
 import RecommandationVente from "./components/profile/contents/RecommandationVente";
+import PaiementFailed from "./components/client/body/contents/PaiementFailed";
+import PaiementSuccess from "./components/client/body/contents/PaiementSuccess";
 
 const notFound = <NotFound />
 const appRoutes = [
@@ -51,6 +53,12 @@ const bodyRoutes = [
   { path: url.app_login, element: <Login /> },
   { path: url.register, element: <Register /> },
   { path: url.checkout, element: <Checkout /> },
+  { path: url.app_checkout, element: <Checkout /> },
+  { path: url.app_checkout_params, element: <Checkout /> },
+  { path: url.checkout_params, element: <Checkout /> },
+  { path: url.checkout_app_paiement, element: <Checkout /> },
+  { path: url.checkout_success, element: <PaiementSuccess /> },
+  { path: url.checkout_failed, element: <PaiementFailed /> },
   //{path:"sinali", element:<Navigate to={url.no_found} replace />}
   { path: url.no_found, element: notFound },
 

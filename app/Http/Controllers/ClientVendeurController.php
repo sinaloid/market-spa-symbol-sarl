@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Commune;
+use App\Models\Compteur;
 
 class ClientVendeurController extends Controller
 {
@@ -120,6 +121,7 @@ class ClientVendeurController extends Controller
      */
     public function store(Request $request)
     {
+        $request['slug'] = $this->generateRandomString();
         if($request['type'] == 2){
             $request['type'] = 0;
         }
@@ -139,6 +141,16 @@ class ClientVendeurController extends Controller
             try {
                 if(Auth::user()->type == 2){
                     $data = User::create($request->toArray());
+                    $userCompteur = Compteur::get()->first();
+                    if(isset($userCompteur)){
+                        $userCompteur->nombre_user++;
+                        if($data->type == 0){
+                            $userCompteur->nombre_acheteur++;
+                        }else{
+                            $userCompteur->nombre_vendeur++;
+                        }
+                        $userCompteur->save();
+                    }
                     return response()->json([
                         'status' => 200,
                         'response' => 'Création de données réussies'//$data
@@ -212,6 +224,7 @@ class ClientVendeurController extends Controller
             try {
                 $data = User::where('id',$slug)->first();
                 if(isset($data) && Auth::user()->type == 2 && ($data->type != 2)){
+                    $prece = $data->type;
                     $data->nom = $request->get('nom');
                     //$data->image = $request->get('image');
                     $data->numero = $request->get('numero');
@@ -222,6 +235,8 @@ class ClientVendeurController extends Controller
                     }
                     $data->type = $request->get('type');
                     $data->update();
+                    $actu = $data->type;
+                    $this->setUserCompteur($prece, $actu);
 
                     return response()->json([
                         'status' => 200,

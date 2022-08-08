@@ -1,12 +1,36 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import { Routes } from "react-router-dom";
+import { AppContext } from "../../../context/context";
 import { dashboardProduitRoutes, getRoute } from "../../../routes";
+import apiClient from "../../../services/api";
 import url from "../../../url";
 import ButtonGroup from "../includes/ButtonGroup";
 import ButtonLink from "../includes/ButtonLink";
 import CardInfo from "../includes/CardInfo";
 
 const Product = () => {
+    const authCtx = useContext(AppContext);
+    const { user, onUserChange } = authCtx;
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        apiClient
+            .get('compteur',{
+              headers: { Authorization: `Bearer ${user.token}` },
+          })
+            .then((res) => {
+                if (res.status === 200) {
+                    setData(res.data.response);
+                } else {
+                }
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 422) {
+                    //notify("error", error.response.data.message);
+                } else {
+                    //notify("error", error.response.data.message);
+                }
+            });
+    }, []);
     return (
         <>
             <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -29,7 +53,8 @@ const Product = () => {
                         </svg>
                     }
                     title="Catégories"
-                    data="124"
+                    data={data && data.nombre_categorie}
+                    
                 />
 
                 <CardInfo
@@ -48,7 +73,7 @@ const Product = () => {
                         </svg>
                     }
                     title="Produits"
-                    data="5124"
+                    data={data && data.nombre_produit}
                 />
             </div>
             <div className="row my-2">

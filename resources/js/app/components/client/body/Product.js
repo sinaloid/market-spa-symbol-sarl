@@ -38,7 +38,7 @@ const Produit = () => {
                         {/*<!-- Categories-->*/}
                         <div className="dropdown mb-lg-3 mb-2 me-lg-3 me-2">
                             <button
-                                className="btn btn-outline-accent btn-primary dropdown-toggle w-100"
+                                className="btn btn-sm btn-afdefis dropdown-toggle w-100"
                                 type="button"
                                 data-bs-toggle="dropdown"
                                 data-bs-auto-close="outside"

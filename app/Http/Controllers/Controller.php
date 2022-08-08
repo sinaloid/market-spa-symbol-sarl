@@ -15,23 +15,29 @@ use App\Models\Marque;
 use App\Models\Product;
 use App\Models\VenteRecommandation;
 use App\Models\Reduction;
+use App\Models\Compteur;
+use App\Models\Commande;
+use App\Models\Paiement;
+use App\Models\Faq;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function all(){
+    public function productAll(){
         try {
-            $temp = VenteRecommandation::where("type","Meilleure vente")->orderBy('updated_at', 'desc')->paginate(4);
+            $temp = VenteRecommandation::where("type","Meilleure vente")->orderBy('updated_at', 'desc');
             $meilleurVente = $this->listProduct($temp);
             
             $temp = VenteRecommandation::where("type","Produit recommandé")->orderBy('updated_at', 'desc')->paginate(8);
             $recommandation = $this->listProduct($temp);
 
-            $temp = Reduction::orderBy('updated_at', 'desc')->paginate(4);
+            $temp = Reduction::where('date', '>=', Carbon::now())->orderBy('created_at', 'DESC')->get();
             $reduction = $this->listProduct($temp,"reduction");
             
             $temp = Product::orderBy('updated_at', 'desc')->paginate(8);
@@ -62,6 +68,22 @@ class Controller extends BaseController
                 'response' => 'Un problème vous empêche de continuer'
             ]);
         }
+    }
+
+    public function faqAll()
+    {
+        try {
+            $datas = Faq::orderBy('created_at', 'DESC')->get();
+            return response()->json([
+                'status' => 200,
+                'response' => $datas
+            ]);
+         }catch (Exception $exception){
+             return response()->json([
+                 'status' => 404,
+                 'response' => 'Un problème vous empêche de continuer'
+             ]);
+         }
     }
 
     public function listProduct($temp, $type = "reduction"){
@@ -146,25 +168,79 @@ class Controller extends BaseController
             ]);
         }
     }
+
+    public function getCompteur()
+    {
+        try {
+            $type = Auth::user()->type;
+            $datas = Compteur::first();
+            if($type == 2){
+                return response()->json([
+                    'status' => 200,
+                    'response' => $datas
+                ]);
+            }
+            return response()->json([
+                'status' => 200,
+                'response' => "Un problème vous empêche de continuer"
+            ]);
+         }catch (Exception $exception){
+             return response()->json([
+                 'status' => 404,
+                 'response' => 'Un problème vous empêche de continuer'
+             ]);
+         }
+    }
     
     public function userRole(Request $request){
 
         $message = 'mode utilisateur normale';
         
         $user = User::where('email', $request['email'])->first();
-        if($user){
+        $prece = -1;
+        $actu = -1;
+        //dd($user);
+        if(isset($user)){
+            $prece = $user->type;
             $user->type = $request['type'];
             //dd($user);
             $user->save();
+            $actu = $user->type;
 
             $message = ($request['type'] === 1) ? 'mode vendeur': $message;
             $message = ($request['type'] === 2) ? 'mode administrateur': $message;
-
+            $this->setUserCompteur($prece, $actu);
             return response()->json($message,200);
         }
 
-        return `l'email n'existe pas`;
+        return "l'email n'existe pas";
 
+    }
+
+    public function setUserCompteur($prece,$actu){
+        $cmp = Compteur::get()->first();
+        if($prece == 0){
+            $cmp->nombre_acheteur--;
+            $cmp->save();
+        }elseif($prece == 1){
+            $cmp->nombre_vendeur--;
+            $cmp->save();
+        }elseif($prece == 2){
+            $cmp->nombre_administrateur--;
+            $cmp->save();
+        }
+
+        if($actu == 0){
+            $cmp->nombre_acheteur++;
+            $cmp->save();
+        }elseif($actu == 1){
+            $cmp->nombre_vendeur++;
+            $cmp->save();
+        }elseif($actu  == 2){
+            $cmp->nombre_administrateur++;
+            $cmp->save();
+        }
+        return;
     }
 
     public function autocompleteCommune(Request $request)
@@ -386,6 +462,16 @@ class Controller extends BaseController
         return "Create is OK";
     }
 
+    public function init(){
+        $this->infoPays();
+        $compteur = Compteur::get()->first();
+        if(!isset($compteur)){
+            Compteur::create();
+        }
+
+        return "init is ok";
+    }
+
     public function countryConfig($names, $id, $table){
         if($table == 1 ){
             /*Pays*/
@@ -421,5 +507,48 @@ class Controller extends BaseController
 
         return Str::random(8);
         //return $randomString;
+    }
+
+    public function paiementSuccess($slug = ''){
+        if($slug != ''){
+            $cmd = Commande::where('slug',$slug)->first();
+            if(isset($cmd)){
+                $oldPay = $cmd->paiement()->first();
+                if(isset($oldPay)){
+                    return response()->json([
+                        'status' => 200,
+                        'response' => "Ce paiement avait déjà été effectuer !"
+                    ]);
+                }
+                $cmdDetails = $cmd->commandeDetails()->get();
+                foreach($cmdDetails as $cmdDetail){
+                    $prod = $cmdDetail->product()->first();
+                    $prod->stock = $prod->stock - $cmdDetail->quantite;
+                    $prod->save();
+                    //dd($prod); ici on met a jour les compteurs
+                    $cmp = Compteur::get()->first();
+                    $cmp->total_vente = $cmp->total_vente + $cmd->prix_total;
+                    $cmp->save();
+                    //'total_vente',
+                }
+                $cmd->etat_commande = "enregistrer";
+                $cmd->save();
+                //dd($cmdDetails);
+                Paiement::create([
+                    'commande_id' => $cmd->id,
+                    'date' => Carbon::now(),
+                    'slug' => $this->generateRandomString()
+                ]);
+                return response()->json([
+                    'status' => 200,
+                    'response' => "Paiement reussi !"
+                ]);
+            }else{
+                return response()->json([
+                    'status' => 900,
+                    'response' => "Échec du processus de finalisation du paiement !"
+                ]);
+            }
+        }
     }
 }

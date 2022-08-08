@@ -14,7 +14,7 @@ const Client = () =>{
             <Body />
             {path.includes(app) && !path.includes('connexion') && !path.includes('faqs') && 
                 <button class="float">
-                <Panier color="#ffffff" classe="" size="fa-xl" />
+                <Panier path={'app'} color="#ffffff" classe="" size="fa-xl" />
                 </button>
             }
             {!path.includes(app) && <Footer />}

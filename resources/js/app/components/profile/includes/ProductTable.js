@@ -53,7 +53,7 @@ const ProcductTable = () => {
         for (let i = 0; i < image.length; i++) {
             data.append("images[]", image[i]);
         }
-        console.log(data)
+        //console.log(data)
         apiClient
             .post(
                 "product",

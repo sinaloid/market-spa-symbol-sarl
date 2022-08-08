@@ -11,8 +11,8 @@ const NotFound = () => {
                 <div className="notfound">
                     <div className="notfound-404"></div>
                     <h1>404</h1>
-                    <h2>Oops! Page introuvable</h2>
-                    <p>
+                    <h2 className="text-primary my-3">Oops! Page introuvable</h2>
+                    <p style={{lineHeight: '150%'}}>
                         Désolé mais la page que vous cherchez n'existe pas. Peut-être que :
                         <ul>
                             <li>elle a été supprimés</li>

@@ -29,6 +29,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 Route::group(['middleware' => ['cors', 'json.response']], function () {
 
     Route::get('infoPays', [Controller::class, 'infoPays']);
+    Route::get('init', [Controller::class, 'init']);
     Route::get('autocompleteCommune',[Controller::class, 'autocompleteCommune'])->name('autocompleteCommune');
 
     // ...
@@ -54,8 +55,11 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
 
     Route::post('user/role', [Controller::class, 'userRole']);
-    Route::get('productAll', [Controller::class, 'all']);
+    Route::get('productAll', [Controller::class, 'productAll']);
     Route::get('prod/{slug}', [Controller::class, 'get']);
+    Route::get('faqAll', [Controller::class, 'faqAll']);
+    Route::get('paiement/success/{slug}', [Controller::class, 'paiementSuccess']);
+
 });
 
 
@@ -74,8 +78,12 @@ Route::middleware(['auth:api','api.verify.email'])->group(function () {
         'marque' => MarqueController::class,
         'faq' => FaqController::class,
     ]);
+    Route::get('compteur', [Controller::class, 'getCompteur']);
+    Route::get('reducterminer', [ReductionController::class, 'terminer']);
     Route::get('acheteur', [ClientVendeurController::class, 'getAcheteur']);
     Route::get('vendeur', [ClientVendeurController::class, 'getVendeur']);
-    Route::get('userCommande/{slug}', [CommandeController::class, 'userCommande']);
+    Route::get('userCommande', [CommandeController::class, 'userCommande']);
+    Route::post('paiement', [CommandeController::class, 'paiement']);
+    Route::get('paiement/list', [CommandeController::class, 'paiementList']);
 
 });

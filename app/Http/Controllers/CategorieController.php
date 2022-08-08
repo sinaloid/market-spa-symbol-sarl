@@ -8,6 +8,7 @@ use PHPUnit\Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Categorie;
+use App\Models\Compteur;
 
 class CategorieController extends Controller
 {
@@ -59,6 +60,12 @@ class CategorieController extends Controller
             try {
                 if(Auth::user()->type == 2){
                     $data = Categorie::create($request->toArray());
+                    $cmpt = Compteur::get()->first();
+                    //dd($cmpt);
+                    if(isset($cmpt)){
+                        $cmpt->nombre_categorie++;
+                        $cmpt->save();
+                    }
                     return response()->json([
                         'status' => 200,
                         'response' => 'Création de données réussies'//$data
@@ -165,6 +172,13 @@ class CategorieController extends Controller
             $data = Categorie::where('slug',$slug);
             $tmp = $data->first();
             if(isset($tmp) &&  Auth::user()->type == 2){
+                $cmpt = Compteur::get()->first();
+                if(isset($cmpt)){
+                    $cmpt->nombre_categorie--;
+                    $cmpt->nombre_categorie = ($cmpt->nombre_categorie < 0) ? 0 : $cmpt->nombre_categorie;
+                    $cmpt->save();
+                }
+            
                 $data->delete();
                 return response()->json([
                     'status' => 200,

@@ -7,7 +7,11 @@ const url = {
     'apropos': '/apropos',
     'login': '/connexion',
     'register': '/inscription',
-    'checkout': '/paiement/:userSlug',
+    'checkout': '/paiement',
+    'checkout_params': '/paiement/:commandSlug',
+    'checkout_app_paiement': '/paiement/app/:commandSlug',
+    'checkout_success': '/paiement/sss/:commandSlug',
+    'checkout_failed': '/paiement/echec',
     'dashboard': '/profile', //pour la redirection
     'dashboard_': '/profile/*',
     'dashboard_home': 'tdb',
@@ -38,6 +42,8 @@ const url = {
     'app_root': '/app/*',
     'app': '/app',
     'app_faqs': '/app/faqs',
+    'app_checkout': '/app/paiement',
+    'app_checkout_params': '/app/paiement/:commandSlug',
     'app_produits': '/app/produits',
     'app_login': '/app/connexion',
     'app_dashboard': '/app/profile', //pour la redirection

@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/context";
 import ReactToastify, { notify } from "../../../ReactToastify";
-import apiClient from "../../../services/api";
+import apiClient, { urlImg } from "../../../services/api";
+import url from "../../../url";
+import ButtonGroup from "../includes/ButtonGroup";
+import ButtonLink from "../includes/ButtonLink";
 import ButtonAction from "../includes/ButtonAction";
 
 const Reduction = () => {
@@ -9,15 +12,16 @@ const Reduction = () => {
     const { user, onUserChange } = authCtx;
     const [product, setProduct] = useState("");
     const [pourcentage, setPourcentage] = useState([]);
-    const [dure, setDure] = useState([]);
+    const [date, setDate] = useState([]);
     const [listProduct, setListProduct] = useState([]);
     const [editeSlug, setEditeSlug] = useState([]);
     const [refresh, setRefresh] = useState([]);
+    const [apiUrl, setApiUrl] = useState("reduction");
 
     const [datas, setDatas] = useState([]);
     useEffect(() => {
         apiClient
-            .get("reduction", {
+            .get(apiUrl, {
                 headers: { Authorization: `Bearer ${user.token}` },
             })
             .then((res) => {
@@ -35,17 +39,17 @@ const Reduction = () => {
                     notify("error", error.response.data.message);
                 }
             });
-    }, [refresh]);
+    }, [refresh, apiUrl]);
     const handleSubmit = (e) => {
         e.preventDefault();
-            
+
         apiClient
             .post(
                 "reduction",
                 {
                     product_slug: product,
                     pourcentage: pourcentage,
-                    dure: dure,
+                    date: date,
                 },
                 {
                     headers: { Authorization: `Bearer ${user.token}` },
@@ -56,7 +60,7 @@ const Reduction = () => {
                     notify("success", res.data.response);
                     setRefresh(refresh + 1);
                     setProduct([]);
-                    setDure([]);
+                    setDate([]);
                     setPourcentage([]);
                 } else {
                     notify("error", res.data.response);
@@ -77,7 +81,7 @@ const Reduction = () => {
                 {
                     product_slug: product,
                     pourcentage: pourcentage,
-                    dure: dure,
+                    date: date,
                 },
                 {
                     headers: { Authorization: `Bearer ${user.token}` },
@@ -88,7 +92,7 @@ const Reduction = () => {
                     notify("success", res.data.response);
                     setRefresh(refresh + 1);
                     setProduct([]);
-                    setDure([]);
+                    setDate([]);
                     setPourcentage([]);
                 } else {
                     notify("error", res.data.response);
@@ -102,7 +106,7 @@ const Reduction = () => {
 
     const setDataEdite = (data) => {
         setPourcentage(data.pourcentage);
-        setDure(data.dure);
+        setDate(data.date);
         setProduct(data.product_slug);
         setEditeSlug(data.id);
     };
@@ -124,6 +128,16 @@ const Reduction = () => {
                 notify("error", error.response.data.message);
             });
     };
+
+    const changeList = (e) => {
+        e.preventDefault();
+        console.log("ok");
+        if (apiUrl != "reduction") {
+            setApiUrl("reduction");
+            return;
+        }
+        setApiUrl('reducterminer');
+    };
     return (
         <>
             <ReactToastify />
@@ -131,8 +145,28 @@ const Reduction = () => {
                 <h1 className="h2">Réductions</h1>
             </div>
 
+            <div className="row my-2">
+                <div className="col-4">
+                    <div
+                        className="btn-group btn-group-sm"
+                        role="group"
+                        aria-label="Small button group"
+                    >
+                        <button 
+                            className="btn btn-sm btn-afdefis"
+                            onClick={changeList}
+                            >En cours</button>
+                        <button 
+                            className="btn btn-sm btn-afdefis"
+                            onClick={changeList}
+                            >Termier</button>
+                    </div>
+                </div>
+            </div>
             <div className="container mt-3 p-0 d-flex position-relative">
-                <h2 className="mt-2">Listes des reductions</h2>
+                <h2 className="mt-2">
+                    Listes des reductions {apiUrl != "reduction" && "terminer"}
+                </h2>
                 <button
                     type="button"
                     className="btn btn-afdefis position-absolute end-0 mx-3"
@@ -169,16 +203,21 @@ const Reduction = () => {
                                 <select
                                     className="form-select"
                                     value={product}
-                                    onChange={(e)=>{setProduct(e.target.value)}}
-                                    >
+                                    onChange={(e) => {
+                                        setProduct(e.target.value);
+                                    }}
+                                >
                                     <option>Sélectionnez le produit</option>
-                                    {
-                                        listProduct.map((product, idx)=>{
-                                            return(
-                                                <option key={idx} value={product.slug}>{product.libelle}</option>
-                                            )
-                                        })
-                                    }
+                                    {listProduct.map((product, idx) => {
+                                        return (
+                                            <option
+                                                key={idx}
+                                                value={product.slug}
+                                            >
+                                                {product.libelle}
+                                            </option>
+                                        );
+                                    })}
                                 </select>
                             </div>
                             <div className="col-12">
@@ -192,7 +231,9 @@ const Reduction = () => {
                                     type="text"
                                     className="form-control"
                                     value={pourcentage}
-                                    onChange={(e)=>{setPourcentage(e.target.value)}}
+                                    onChange={(e) => {
+                                        setPourcentage(e.target.value);
+                                    }}
                                     required
                                 />
                             </div>
@@ -202,13 +243,15 @@ const Reduction = () => {
                                     htmlFor="validationCustom01"
                                     className="form-label"
                                 >
-                                    Durée de la réduction en jour
+                                    Date de fin de la réduction
                                 </label>
                                 <input
-                                    type="text"
+                                    type="date"
                                     className="form-control"
-                                    value={dure}
-                                    onChange={(e)=>{setDure(e.target.value)}}
+                                    value={date}
+                                    onChange={(e) => {
+                                        setDate(e.target.value);
+                                    }}
                                     required
                                 />
                             </div>
@@ -253,16 +296,21 @@ const Reduction = () => {
                                 <select
                                     className="form-select"
                                     value={product}
-                                    onChange={(e)=>{setProduct(e.target.value)}}
-                                    >
+                                    onChange={(e) => {
+                                        setProduct(e.target.value);
+                                    }}
+                                >
                                     <option>Sélectionnez le produit</option>
-                                    {
-                                        listProduct.map((product, idx)=>{
-                                            return(
-                                                <option key={idx} value={product.slug}>{product.libelle}</option>
-                                            )
-                                        })
-                                    }
+                                    {listProduct.map((product, idx) => {
+                                        return (
+                                            <option
+                                                key={idx}
+                                                value={product.slug}
+                                            >
+                                                {product.libelle}
+                                            </option>
+                                        );
+                                    })}
                                 </select>
                             </div>
                             <div className="col-12">
@@ -276,7 +324,9 @@ const Reduction = () => {
                                     type="text"
                                     className="form-control"
                                     value={pourcentage}
-                                    onChange={(e)=>{setPourcentage(e.target.value)}}
+                                    onChange={(e) => {
+                                        setPourcentage(e.target.value);
+                                    }}
                                     required
                                 />
                             </div>
@@ -286,13 +336,15 @@ const Reduction = () => {
                                     htmlFor="validationCustom01"
                                     className="form-label"
                                 >
-                                    Durée de la réduction en jour
+                                    Date de fin de la réduction
                                 </label>
                                 <input
-                                    type="text"
+                                    type="date"
                                     className="form-control"
-                                    value={dure}
-                                    onChange={(e)=>{setDure(e.target.value)}}
+                                    value={date}
+                                    onChange={(e) => {
+                                        setDate(e.target.value);
+                                    }}
                                     required
                                 />
                             </div>
@@ -326,12 +378,17 @@ const Reduction = () => {
                         {datas.map((data, idx) => {
                             return (
                                 <tr key={idx}>
-                                    <td>{idx+1}</td>
+                                    <td>{idx + 1}</td>
                                     <td>{data.product_nom}</td>
-                                    <td>{data.pourcentage +" %"}</td>
-                                    <td>{data.dure + " jours"}</td>
+                                    <td>{data.pourcentage + " %"}</td>
+                                    <td>{data.date}</td>
                                     <td>
-                                        <ButtonAction slug={data.id} dataEdite={data} setDataEdite={setDataEdite} onDelete={onDelete} />
+                                        <ButtonAction
+                                            slug={data.id}
+                                            dataEdite={data}
+                                            setDataEdite={setDataEdite}
+                                            onDelete={onDelete}
+                                        />
                                     </td>
                                 </tr>
                             );

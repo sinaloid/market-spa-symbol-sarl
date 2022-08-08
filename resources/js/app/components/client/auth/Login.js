@@ -71,7 +71,7 @@ const Login = () => {
                             <i className="fas fa-user"></i>
                             <input
                                 type="text"
-                                placeholder="Username"
+                                placeholder="Votre email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
@@ -80,7 +80,7 @@ const Login = () => {
                             <i className="fas fa-lock"></i>
                             <input
                                 type="password"
-                                placeholder="Password"
+                                placeholder="Votre mots de passe"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
@@ -95,7 +95,7 @@ const Login = () => {
                             <input
                                 type="submit"
                                 value="Connexion"
-                                className="btn btn-primary solid"
+                                className="btn btn-afdefis solid"
                             />
                         )}
                         <p className="social-text">

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo-circle.jpeg') }}" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo-circle.jpeg') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo e(asset('images/logo-circle.jpeg')); ?>" />
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo e(asset('images/logo-circle.jpeg')); ?>" />
     <title>Africa Défis</title>
     <script src="https://kit.fontawesome.com/8b7c4e5629.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -62,7 +62,7 @@
             animation: load 1.5s infinite;
         }
 
-        @keyframes load {
+        @keyframes  load {
             100% {
                 transform: rotate(360deg);
             }
@@ -111,3 +111,4 @@
 </body>
 
 </html>
+<?php /**PATH C:\Users\Ounoid\Documents\DevSinaloid\Projet\market app web et mobile\RestoreSpa\market-spa-symbol-sarl\resources\views/welcome.blade.php ENDPATH**/ ?>

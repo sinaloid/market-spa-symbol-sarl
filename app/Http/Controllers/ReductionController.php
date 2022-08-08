@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Reduction;
 use App\Models\Product;
-
+use Carbon\Carbon;
 
 class ReductionController extends Controller
 {
@@ -25,9 +25,11 @@ class ReductionController extends Controller
     public function index()
     {
         try {
-            $datas = Reduction::orderBy('created_at', 'DESC')->get();
+            $datas = Reduction::where('date', '>=', Carbon::now())->orderBy('created_at', 'DESC')->get();
+            //$datas = Reduction::orderBy('created_at', 'DESC')->get();
             $prod = Product::orderBy('created_at', 'DESC')->get(["libelle","slug"]);
             $tmp = [];
+            
             foreach($datas as $data){
                 array_push($tmp,[
                     "id" => $data->id,
@@ -35,7 +37,37 @@ class ReductionController extends Controller
                     "product_nom" => $data->product->libelle,
                     "product_slug" => $data->product->slug,
                     "pourcentage" => $data->pourcentage,
-                    "dure" => $data->dure,
+                    "date" => $data->date,
+                ]);
+            }
+            return response()->json([
+                'status' => 200,
+                'reduction' => $tmp,
+                'product' => $prod
+            ]);
+         }catch (Exception $exception){
+             return response()->json([
+                 'status' => 404,
+                 'response' => 'Un problème vous empêche de continuer'
+             ]);
+         }
+    }
+    public function terminer()
+    {
+        try {
+            $datas = Reduction::where('date', '<', Carbon::now())->orderBy('created_at', 'DESC')->get();
+            //$datas = Reduction::orderBy('created_at', 'DESC')->get();
+            $prod = Product::orderBy('created_at', 'DESC')->get(["libelle","slug"]);
+            $tmp = [];
+            
+            foreach($datas as $data){
+                array_push($tmp,[
+                    "id" => $data->id,
+                    "product_id" => $data->product_id,
+                    "product_nom" => $data->product->libelle,
+                    "product_slug" => $data->product->slug,
+                    "pourcentage" => $data->pourcentage,
+                    "date" => $data->date,
                 ]);
             }
             return response()->json([
@@ -59,6 +91,7 @@ class ReductionController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         //$request['slug'] = $this->generateRandomString();
         $request['product_id'] = Product::where('slug', $request['product_slug'])->first();
         if(!isset($request['product_id'])){
@@ -170,7 +203,7 @@ class ReductionController extends Controller
                 $data = Reduction::where('id',$slug)->first();
                 if(isset($data) && Auth::user()->type >= 1 && Auth::user()->id == $produitUserId){
                     $data->pourcentage = $request->get('pourcentage');
-                    $data->dure = $request->get('dure');
+                    $data->date = $request->get('date');
                     $data->product_id = $request->get('product_id');
                     $data->update();
                     return response()->json([
@@ -225,13 +258,13 @@ class ReductionController extends Controller
     public function dataToValidate($type = ""){
         if($type == "update"){
             return [
-                'dure' => 'required|integer',
+                'date' => 'required|date',
                 'pourcentage' => 'required|integer',
                 'product_id' => 'required|integer',
             ];
         }
         return [
-            'dure' => 'required|integer',
+            'date' => 'required|date',
             'pourcentage' => 'required|integer',
             'product_id' => 'required|integer|unique:reductions',
         ];

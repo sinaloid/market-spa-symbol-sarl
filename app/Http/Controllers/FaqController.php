@@ -193,7 +193,7 @@ class FaqController extends Controller
         };
         return [
             'question' => 'required|string|max:255|unique:faqs',
-            'response' => 'required|string|max:255|unique:faqs',
+            'response' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:faqs',
         ];
     }

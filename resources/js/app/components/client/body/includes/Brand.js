@@ -9,8 +9,8 @@ const Brand = ({datas = []}) => {
         <h2 className="h3 mb-0 pt-3 me-3 title-1">Meilleures marques</h2>
         <div className="row pt-3">
           <a
-            className="btn btn-outline-accent btn-sm"
-            href="grocery-catalog.html"
+            className="btn btn-outline-accent btn-sm txt-white-hover"
+            href="#"
           >
             Voir toutes les marques
             <i className="ci-arrow-right ms-1 me-n1"></i>

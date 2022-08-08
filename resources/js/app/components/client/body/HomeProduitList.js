@@ -11,7 +11,7 @@ const HomeProduitList = ({datas = [], title}) => {
             <h2 className="h3 mb-0 me-3 title-1">{title}</h2>
             <div className="row pt-3">
               <Link
-                className="btn btn-outline-accent btn-sm"
+                className="btn btn-outline-accent btn-sm txt-white-hover"
                 to={url.produits}
               >
                 Plus de products

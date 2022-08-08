@@ -1,17 +1,52 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../../context/context";
+import apiClient from "../../../services/api";
 import { BarChart } from "../charts/BarChart";
 import { PieChart } from "../charts/PieChart";
 import CardInfo from "../includes/CardInfo";
 import OrderTable from "../includes/OrderTable";
 
 const Order = () => {
+    const authCtx = useContext(AppContext);
+    const { user, onUserChange } = authCtx;
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        apiClient
+            .get('compteur',{
+              headers: { Authorization: `Bearer ${user.token}` },
+          })
+            .then((res) => {
+                if (res.status === 200) {
+                    setData(res.data.response);
+                } else {
+                }
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 422) {
+                    //notify("error", error.response.data.message);
+                } else {
+                    //notify("error", error.response.data.message);
+                }
+            });
+    }, []);
+
+    const autorisation = (view) => {
+        if (user.type == 2) {
+            return view;
+        }
+    };
     return (
         <>
             <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 className="h2">Commandes</h1>
                 
             </div>
-            <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+            
+
+            {
+                autorisation(
+                    <>
+                        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
                 <CardInfo
                     icon={
                         <svg
@@ -28,7 +63,7 @@ const Order = () => {
                         </svg>
                     }
                     title="Commandes"
-                    data="5124"
+                    data={ data && data.nombre_commande}
                 />
 
                 <CardInfo
@@ -47,7 +82,7 @@ const Order = () => {
                         </svg>
                     }
                     title="Livrer"
-                    data="285"
+                    data={ data && data.nombre_livraison_teminer}
                 />
 
                 <CardInfo
@@ -66,7 +101,8 @@ const Order = () => {
                         </svg>
                     }
                     title="En cours"
-                    data="121"
+                    data={ data && data.nombre_livraison_en_cours}
+                    
                 />
 
                 <CardInfo
@@ -85,14 +121,16 @@ const Order = () => {
                         </svg>
                     }
                     title="Revenu"
-                    data="$2121"
+                    data={ data && data.total_vente + " FCFA"}
                 />
             </div>
             <div className="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 g-3">
                 <BarChart title={"Commandes des 6 dernières mois"} />
                 <PieChart title={"Commandes des 6 dernières mois par région"} />
             </div>
-
+                    </>
+                )
+            }
             
 
             <div className="container mt-4 d-flex position-relative p-0">

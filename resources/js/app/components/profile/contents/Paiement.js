@@ -1,8 +1,33 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../../context/context";
+import apiClient from "../../../services/api";
 import CardInfo from "../includes/CardInfo";
 import PayTable from "../includes/PayTable";
 
 const Paiement = () => {
+  const authCtx = useContext(AppContext);
+    const { user, onUserChange } = authCtx;
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        apiClient
+            .get("compteur", {
+                headers: { Authorization: `Bearer ${user.token}` },
+            })
+            .then((res) => {
+              console.log(res)
+                if (res.status === 200) {
+                    setData(res.data.response);
+                } else {
+                }
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 422) {
+                    //notify("error", error.response.data.message);
+                } else {
+                    //notify("error", error.response.data.message);
+                }
+            });
+    }, []);
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -27,7 +52,7 @@ const Paiement = () => {
             
           }
           title="Paiements recu"
-          data="0 fcfa"
+          data={data && Intl.NumberFormat().format(data.total_vente) + " FCFA"}
         />
 
         <CardInfo
@@ -56,10 +81,10 @@ const Paiement = () => {
       <div className="card shadow-sm table-responsive">
         <PayTable />
       </div>
-      <h2 className="mt-4">Historiques des paiements effectué</h2>
+      {/*<h2 className="mt-4">Historiques des paiements effectué</h2>
       <div className="card shadow-sm table-responsive">
         <PayTable />
-      </div>
+        </div>*/}
     </>
   );
 };

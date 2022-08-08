@@ -13,10 +13,6 @@ import Recommandation from "./Recommadation";
 
 const Home = () => {
     const path = window.location.pathname;
-    const [question, setQuestion] = useState("");
-    const [response, setResponse] = useState("");
-    const [editeSlug, setEditeSlug] = useState([]);
-    const [refresh, setRefresh] = useState([]);
 
     const [datas, setDatas] = useState([]);
     useEffect(() => {
@@ -36,12 +32,6 @@ const Home = () => {
                 }
             });
     }, []);
-    const getCarousel = (datas, title) =>{
-      console.log(datas)
-      return(
-        <HomeProduitListCarousel datas={datas.reduction} title={title} />
-      )
-    }
     return (
         <main>
             <Carousel />

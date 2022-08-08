@@ -16,9 +16,16 @@ return new class extends Migration
         Schema::create('publicites', function (Blueprint $table) {
             $table->id();
             $table->string("image");
-            $table->string("description");
-            $table->string("dure");
+            $table->string("description")->nullable();
+            $table->string("dure")->nullable();
             $table->timestamps();
+
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreign('product_id')
+                    ->references('id')
+                    ->on('products')
+                    ->onDelete('restrict')
+                    ->onUpdate('restrict');
         });
     }
 

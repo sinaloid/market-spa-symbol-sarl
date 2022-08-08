@@ -12,7 +12,9 @@ class Commande extends Model
         'numero_commande',
         'date',
         'prix_total',
-        'etat',
+        'etat_livraison',
+        'etat_commande',
+        'slug',
         'user_id',
     ];
     
@@ -23,6 +25,11 @@ class Commande extends Model
 
     public function commandeDetails() {
 
-        return $this->hasMany(User::class);
+        return $this->hasMany(CommandeDetail::class);
+    }
+
+    public function paiement() {
+
+        return $this->hasOne(Paiement::class);
     }
 }

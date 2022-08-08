@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../../context/context";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import apiClient, { urlImg } from "../../../../services/api";
+import url from "../../../../url";
 
 const ProductDetail = () => {
     const cartCtx = useContext(AppContext);
@@ -94,9 +95,14 @@ const ProductDetail = () => {
                                     <div className="d-flex justify-content-between align-items-center">
                                         <div className="d-flex align-items-center">
                                             <i className="fa fa-long-arrow-left"></i>
-                                            <span className="ml-1">Back</span>
+                                            <Link to={url.home} className="mx-1 link" style={{textDecoration:'none'}}>Retour</Link>
                                         </div>
-                                        <i className="fa fa-shopping-cart text-muted"></i>
+                                        <i 
+                                            data-bs-toggle="offcanvas"
+                                            data-bs-target="#offcanvasRight"
+                                            aria-controls="offcanvasRight"
+                                            className="fa-solid fa-shopping-cart text-muted" style={{ color: '#3292f0' }}></i>
+                                            
                                     </div>
                                     <div className="mt-4 mb-3">
                                         <span className="text-uppercase text-muted brand">
@@ -123,15 +129,15 @@ const ProductDetail = () => {
                                     
                                     <div className="cart mt-4 align-items-center">
                                         <button
-                                            className="btn btn-danger text-uppercase mr-2 px-4"
+                                            className="btn btn-afdefis-secondary  text-uppercase mr-2 px-4"
                                             onClick={() => {
                                                 addProduit();
                                             }}
                                         >
                                             Ajouter au panier
                                         </button>
-                                        <i className="fa fa-heart text-muted"></i>
-                                        <i className="fa fa-share-alt text-muted"></i>
+                                        <i className="fa fa-heart text-muted mx-1"></i>
+                                        <i className="fa fa-share-alt text-muted mx-1"></i>
                                     </div>
                                 </div>
                             </div>

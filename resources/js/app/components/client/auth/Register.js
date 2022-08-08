@@ -161,7 +161,7 @@ const Register = () => {
                         ) : (
                             <input
                                 type="submit"
-                                className="btn btn-primary"
+                                className="btn btn-afdefis"
                                 value="S'inscrire"
                             />
                         )}

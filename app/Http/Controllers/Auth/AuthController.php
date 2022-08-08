@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Compteur;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -33,6 +34,12 @@ class AuthController extends Controller
         $request['type'] = 0;
         $request['image'] = "";
         $user = User::create($request->toArray())->sendEmailVerificationNotification();
+        $userCompteur = Compteur::get()->first();
+        if(isset($userCompteur)){
+            $userCompteur->nombre_user++;
+            $userCompteur->nombre_acheteur++;
+            $userCompteur->save();
+        }
         //$token = $user->createToken('Laravel Password Grant Client')->accessToken;
         $response = [
             'message' => 'Compte créer avec succès !'

@@ -47,7 +47,7 @@ const OrderTable = () => {
                 {
                     email: email,
                     date: date,
-                    etat: etat,
+                    etat_livraison: etat,
                 },
                 {
                     headers: { Authorization: `Bearer ${user.token}` },
@@ -79,7 +79,7 @@ const OrderTable = () => {
                 {
                     email: email,
                     date: date,
-                    etat: etat,
+                    etat_livraison: etat,
                 },
                 {
                     headers: { Authorization: `Bearer ${user.token}` },
@@ -348,7 +348,7 @@ const OrderTable = () => {
                                 <td>{data.email}</td>
                                 <td>{data.numero}</td>
                                 <td>{data.date}</td>
-                                <td>{data.prix_total}</td>
+                                <td>{Intl.NumberFormat().format(data.prix_total) +" FCFA"}</td>
                                 <td>
                                     <span className="badge bg-success">
                                         {data.etat}
@@ -356,7 +356,7 @@ const OrderTable = () => {
                                 </td>
                                 <td>
                                     <Link
-                                        to={url.checkout}
+                                        to={"/paiement/"+data.slug}
                                         className="text-danger mx-2"
                                     >
                                         <i className="fa-solid fa-cart-shopping fa-md" style={{ color: "#0d6efd" }}></i>

@@ -41,4 +41,8 @@ class Product extends Model
     public function images() {
         return $this->hasMany(Image::class);
     }
+
+    public function commandeDetails() {
+        return $this->hasMany(CommandeDetail::class);
+    }
 }

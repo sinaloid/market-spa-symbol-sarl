@@ -251,6 +251,10 @@ important
 	margin-top:22px;
 }
 
+.txt-white-hover:hover{
+  color: white;
+}
+
 @media screen and (max-width: 768px) {
 
   

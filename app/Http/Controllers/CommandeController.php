@@ -8,7 +8,12 @@ use PHPUnit\Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Commande;
+use App\Models\CommandeDetail;
+use App\Models\Product;
 use App\Models\User;
+use App\Models\Compteur;
+use App\Models\Paiement;
+use Carbon\Carbon;
 
 class CommandeController extends Controller
 {
@@ -24,7 +29,8 @@ class CommandeController extends Controller
     public function index()
     {
         try {
-            $datas = Commande::orderBy('created_at', 'DESC')->get();
+            $datas = Commande::where("etat_commande","enregistrer")->orderBy('created_at', 'DESC')->get();
+            //$datas = Commande::orderBy('created_at', 'DESC')->get();
             $acheteurs = User::orderBy('created_at', 'DESC')->get();
             $tmp = [];
             foreach($datas as $data){
@@ -36,7 +42,8 @@ class CommandeController extends Controller
                     "numero_commande" => $data->numero_commande,
                     "prix_total" => $data->prix_total,
                     "date" => $data->date,
-                    "etat" => $data->etat,
+                    "etat" => $data->etat_livraison,
+                    "slug" => $data->slug,
                 ]);
             }
             return response()->json([
@@ -52,9 +59,9 @@ class CommandeController extends Controller
          }
     }
 
-    public function userCommande($slug = "")
+    public function userCommande()
     {
-        $user = User::where("slug",$slug)->first();
+        $user = Auth::user();
         $response = null;
         if(isset($user)){
             $response = [
@@ -64,13 +71,128 @@ class CommandeController extends Controller
                 'slug' => $user->slug,
                 'numero' => $user->numero,
                 'commune' => $user->commune->nom_commune,
-                'date' => date('j/m/y'),
-                'fact' =>  $this->getNumeroCommande(),
-            ];  
+                'date' => "",//$data->date, //date('j/m/y'),
+                'fact' =>  ""//$data->numero_commande //$this->getNumeroCommande(),
+            ]; 
         }
-        return response()->json($response,200);
+        
+        return response()->json([
+            'status' => 200,
+            'user' => $response,
+        ],200);
+    }
+    public function paiement(Request $request){
+        
+        $etat_commande = $request->get("etat_commande");
+        $produits = $request->get("produit");
+        $produits = json_decode($produits);
+        $cmdSlug = $request->get("commandSlug");
+        $cmdId = '';
+        $cmd = [
+            'numero_commande'=> $this->getNumeroCommande(),
+            'prix_total' => 0,
+            'date' => Carbon::now(),
+            'etat_commande' => $etat_commande,
+            'etat_livraison' => "En cours",
+            'slug' => $this->generateRandomString(),
+            'user_id' => Auth::user()->id,
+        ];
+        //dd($request->all());
+        if($cmdSlug === "undefined"){
+            $cmdSave = Commande::create($cmd);
+            //$cmdId = $cmdSave->id;
+            $total = $this->createCommandeDetail($produits, $cmdSave->id);
+            //dd($total);
+            $cmdSave->prix_total = $total*1.18;
+            $cmdSave->update();
+            return response()->json([
+                'status' => 200,
+                'message' => "Votre commande a bien été enregistrer",
+                'commandSlug' => $cmdSave->slug,
+                'response' => $cmdSave->prix_total 
+            ],200);
+        }else{
+            $cmd = Commande::where('slug',$cmdSlug)->first();
+            if(isset($cmd)){
+                $cmdDetail = $cmd->commandeDetails()->first();
+                $cmdId = $cmd->id;
+                //dd($cmdDetail);
+                if(!isset($cmdDetail)){
+                    $total = $this->createCommandeDetail($produits, $cmdId);  
+                    $cmd->prix_total = $total*1.18;
+                    $cmd->update();
+                    return response()->json([
+                        'status' => 200,
+                        'message' => "Votre commande a bien été enregistrer",
+                        'commandSlug' => $cmd->slug,
+                        'response' => $cmd->prix_total
+                    ],200);
+                }
+                return response()->json([
+                    'status' => 200,
+                    'message' => "Votre commande existe déjà",
+                    'commandSlug' => $cmd->slug,
+                    'response' => $cmd->prix_total
+                ],200);
+            }
+            return 'La commande ne peut pas être restaurée';  
+        }
     }
 
+    public function createCommandeDetail($produits, $cmdId){
+
+        $total = 0;
+
+        foreach($produits as $produit){
+            $prod  = Product::where('slug',$produit->id)->first();
+            //dd($prod);
+            $cmdDetail = [
+                'prix'=> $prod->prix,
+                'reduction'=> (isset($prod->reduction)) ? $prod->reduction()->first()->pourcentage : 0,
+                'quantite'=> $produit->quantite,
+                'commande_id'=> $cmdId,
+                'product_id'=> $prod->id,
+            ];
+            $tmp = CommandeDetail::create($cmdDetail);
+            $prix_unitaire = $tmp->prix * (1 - $tmp->reduction/100);
+            $total = ($prix_unitaire * $tmp->quantite) + $total;
+        }
+
+        return $total;
+    }
+
+    public function paiementList(){
+        try {
+                $type = Auth::user()->type;
+                $cmpteur = Compteur::first();
+                if($type == 2){
+                    $datas = Paiement::orderBy('created_at', 'DESC')->get();
+                    $tmp = [];
+                    foreach($datas as $data){
+                        array_push($tmp,[
+                            "nom" => $data->commande->user->nom,
+                            "email" => $data->commande->user->email,
+                            "numero" => $data->commande->user->numero,
+                            "numero_commande" => $data->commande->numero_commande,
+                            "prix_total" => $data->commande->prix_total,
+                            "date" => $data->date,
+                            "slug" => $data->slug,
+                        ]);
+                    }
+                    return response()->json([
+                        'status' => 200,
+                        'response' => $tmp,
+                        'compteur' => $cmpteur
+                    ],200);              
+            }
+            
+         }catch (Exception $exception){
+             return response()->json([
+                 'status' => 404,
+                 'response' => 'Un problème vous empêche de continuer'
+             ]);
+         }
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -81,7 +203,7 @@ class CommandeController extends Controller
     {
         $request['slug'] = $this->generateRandomString();
         $request['user_id'] = User::where('email', $request['email'])->first();
-        
+        $request['etat_commande'] = "enregistrer";
         if($request['user_id'] == null){
             return response()->json([
                 'status' => 404,
@@ -104,7 +226,7 @@ class CommandeController extends Controller
             try {
                 if(Auth::user()->type == 2){
                     $request['numero_commande'] = $this->getNumeroCommande();
-                    $request['prix_total'] = "457";
+                    $request['prix_total'] = "0";
                     $data = Commande::create($request->toArray());
                     return response()->json([
                         'status' => 200,
@@ -135,10 +257,23 @@ class CommandeController extends Controller
     public function show($slug)
     {
         try {
-            $data = Commande::where('slug',$slug)->get();
+            //$cmd = Commande::where('slug',$slug);
+            $data = Commande::where('slug',$slug)->first();
             if(isset($data)){
+                $user = [
+                    'type' => $data->user->type,
+                    'nom' => $data->user->nom,
+                    'email' => $data->user->email,
+                    'slug' => $data->user->slug,
+                    'numero' => $data->user->numero,
+                    'commune' => $data->user->commune->nom_commune,
+                    'date' => $data->date, //date('j/m/y'),
+                    'fact' =>  $data->numero_commande //$this->getNumeroCommande(),
+                ];
+                //dd($user);
                 return response()->json([
                     'status' => 200,
+                    'user' => $user,
                     'response' => $data
                 ]);
             }
@@ -165,7 +300,7 @@ class CommandeController extends Controller
     {
         $request['slug'] = $this->generateRandomString();
         $request['user_id'] = User::where('email', $request['email'])->first();
-        
+        $request['etat_commande'] = "enregistrer";
         if($request['user_id'] == null){
             return response()->json([
                 'status' => 404,
@@ -246,14 +381,14 @@ class CommandeController extends Controller
             return [
                 'user_id' => 'nullable|integer',
                 'date' => 'nullable|date',
-                'etat' => 'nullable|string|max:255',
+                'etat_livraison' => 'nullable|string|max:255',
                 'slug' => 'nullable|string|max:255',
             ];
         }
         return [
             'user_id' => 'required|integer',
             'date' => 'required|date',
-            'etat' => 'required|string|max:255',
+            'etat_livraison' => 'required|string|max:255',
             'slug' => 'required|string|max:255',
         ];
     }

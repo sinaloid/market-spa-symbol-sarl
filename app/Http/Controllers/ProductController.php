@@ -11,6 +11,7 @@ use App\Models\Categorie;
 use App\Models\Product;
 use App\Models\Marque;
 use App\Models\Image;
+use App\Models\Compteur;
 use Illuminate\Support\Facades\File;
 
 
@@ -129,6 +130,14 @@ class ProductController extends Controller
                             'nom_image' => $filename,
                             'product_id' => $data->id
                         ]);
+                    }
+                    $cmpt = Compteur::get()->first();
+                    if(isset($cmpt)){
+                        $cmpt->nombre_produit++;
+                        $cmpt->save();
+                        $categorie = Categorie::find($data->categorie_id);
+                        $categorie->nombre_produit++;
+                        $categorie->save();
                     }
                     return response()->json([
                         'status' => 200,
@@ -250,6 +259,17 @@ class ProductController extends Controller
             $data = Product::where('slug',$slug);
             $tmp = $data->first();
             if(isset($tmp) &&  (Auth::id() == $tmp->user_id || Auth::user()->type == 2)){
+                $cmpt = Compteur::get()->first();
+                if(isset($cmpt)){
+                    $cmpt->nombre_produit--;
+                    $cmpt->nombre_produit = ($cmpt->nombre_produit < 0) ? 0 : $cmpt->nombre_produit;
+                    $cmpt->save();
+                    $categorie = Categorie::find($tmp->categorie_id);
+                    $categorie->nombre_produit++;
+                    $categorie->save();
+
+                }
+
                 $reduc = $tmp->reduction();
                 $imgsTodelete = $tmp->images();
                 $imgs = $tmp->images()->get();

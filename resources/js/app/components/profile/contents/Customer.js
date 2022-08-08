@@ -1,12 +1,43 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import { Routes } from "react-router-dom";
+import { AppContext } from "../../../context/context";
 import { dashboardClientRoutes, getRoute } from "../../../routes";
+import apiClient from "../../../services/api";
 import url from "../../../url";
 import ButtonGroup from "../includes/ButtonGroup";
 import ButtonLink from "../includes/ButtonLink";
 import CardInfo from "../includes/CardInfo";
 
 const Customer = () => {
+
+    const authCtx = useContext(AppContext);
+    const { user, onUserChange } = authCtx;
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        apiClient
+            .get('compteur',{
+              headers: { Authorization: `Bearer ${user.token}` },
+          })
+            .then((res) => {
+                if (res.status === 200) {
+                    setData(res.data.response);
+                } else {
+                }
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 422) {
+                    //notify("error", error.response.data.message);
+                } else {
+                    //notify("error", error.response.data.message);
+                }
+            });
+    }, []);
+
+    const autorisation = (view) => {
+        if (user.type == 2) {
+            return view;
+        }
+    };
     return (
         <>
             <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -30,7 +61,7 @@ const Customer = () => {
                         </svg>
                     }
                     title="Total"
-                    data="5124"
+                    data={data && data.nombre_user}
                 />
 
                 <CardInfo
@@ -49,7 +80,7 @@ const Customer = () => {
                         </svg>
                     }
                     title="Vendeurs"
-                    data="285"
+                    data={data && data.nombre_vendeur}
                 />
 
                 <CardInfo
@@ -67,8 +98,8 @@ const Customer = () => {
                             <path d="M224 256c70.7 0 128-57.31 128-128S294.7 0 224 0C153.3 0 96 57.31 96 128S153.3 256 224 256zM274.7 304H173.3c-95.73 0-173.3 77.6-173.3 173.3C0 496.5 15.52 512 34.66 512H413.3C432.5 512 448 496.5 448 477.3C448 381.6 370.4 304 274.7 304zM479.1 320h-73.85C451.2 357.7 480 414.1 480 477.3C480 490.1 476.2 501.9 470 512h138C625.7 512 640 497.6 640 479.1C640 391.6 568.4 320 479.1 320zM432 256C493.9 256 544 205.9 544 144S493.9 32 432 32c-25.11 0-48.04 8.555-66.72 22.51C376.8 76.63 384 101.4 384 128c0 35.52-11.93 68.14-31.59 94.71C372.7 243.2 400.8 256 432 256z" />
                         </svg>
                     }
-                    title="Clients"
-                    data="121"
+                    title="Acheteurs"
+                    data={data && data.nombre_acheteur}
                 />
 
                 <CardInfo
@@ -87,7 +118,9 @@ const Customer = () => {
                         </svg>
                     }
                     title="Administrateurs"
-                    data="5"
+                    data={data && data.nombre_administrateur}
+                    
+                    
                 />
             </div>
 

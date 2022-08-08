@@ -13,13 +13,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('reductions', function (Blueprint $table) {
+        Schema::create('commande_details', function (Blueprint $table) {
             $table->id();
-            $table->Integer('pourcentage');
-            $table->Date('date');
+            $table->string('prix');
+            $table->integer("reduction");
+            $table->integer("quantite");
             $table->timestamps();
 
-            $table->unsignedBigInteger('product_id')->unique();
+            $table->unsignedBigInteger('commande_id');
+            $table->foreign('commande_id')
+                    ->references('id')
+                    ->on('commandes')
+                    ->onDelete('restrict')
+                    ->onUpdate('restrict');
+
+            $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')
                     ->references('id')
                     ->on('products')
@@ -35,6 +43,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reductions');
+        Schema::dropIfExists('commande_details');
     }
 };

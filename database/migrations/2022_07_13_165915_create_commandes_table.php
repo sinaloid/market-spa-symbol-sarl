@@ -17,8 +17,10 @@ return new class extends Migration
             $table->id();
             $table->string('numero_commande');
             $table->date('date');
-            $table->float('prix_total');
-            $table->string('etat');
+            $table->double('prix_total');
+            $table->string('etat_livraison');
+            $table->string('etat_commande');
+            $table->string('slug');
             $table->timestamps();
 
             $table->unsignedBigInteger('user_id');

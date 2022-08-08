@@ -1,17 +1,42 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import apiClient from "../../../../services/api";
 import url from "../../../../url";
-import "../not_found/css/style.css";
+import pay from "../../../../assets/img/payment.gif"
 
-const NotFound = () => {
+const PaiementSuccess = () => {
+    let { commandSlug } = useParams();
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        apiClient
+                .get(`paiement/success/${commandSlug}`)
+                .then((res) => {
+                    console.log(res);
+                    setMessage(res.data.response);
+                    if (false) {
+                        
+                        //console.log("user type change : " + res.data.type);
+                    } else {
+                        //console.log("user type not change : " + res.data.type);
+                    }
+                    
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+    }, []);
     return (
         <>
             
             <div id="notfound">
                 <div className="notfound">
-                    <div className="notfound-404"></div>
-                    <h1>404</h1>
-                    <h2>Oops! Page introuvable</h2>
+                    <div>
+                        <img src={pay} width="200" alt="" />
+                    </div>
+                    <h2 className="my-4">{message}</h2>
+                    {/*<h1>404</h1>
+                    
                     <p>
                         Désolé mais la page que vous cherchez n'existe pas. Peut-être que :
                         <ul>
@@ -19,7 +44,7 @@ const NotFound = () => {
                             <li>son nom a changé</li>
                             <li>elle est temporairement indisponible</li>
                         </ul>
-                    </p>
+                    </p>*/}
                     <Link to={url.home} className="link">Retour à la page d'accueil</Link>
                 </div>
             </div>
@@ -27,4 +52,4 @@ const NotFound = () => {
     );
 };
 
-export default NotFound;
+export default PaiementSuccess;
