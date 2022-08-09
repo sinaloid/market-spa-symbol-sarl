@@ -116,7 +116,7 @@ const Checkout = () => {
     }
     const handleOnClickShare = () => {
         alert("ok");
-        window.open(`https://192.168.1.16:8000/paiement/app/${commandSlug}`, '_blank');
+        window.open(`http://market.africadefis.com/paiement/app/${commandSlug}`, '_blank');
       };
     
     return (
