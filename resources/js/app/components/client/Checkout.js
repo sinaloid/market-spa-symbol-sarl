@@ -51,8 +51,8 @@ const Checkout = () => {
                         prxTotal += data.prix * data.quantite;
                     });
                     setTotal(prxTotal);
-                    if(res.data.product !=null){
-                        setDatas(res.data.product)
+                    if(res.data.produits !=null){
+                        setDatas(res.data.produits)
                     }else{
                         setDatas(cart.content)
                     }
@@ -64,7 +64,7 @@ const Checkout = () => {
         }
     }, []);
 
-    const handleSubmit = (type = "", pay) => {
+    const handleSubmit = (type = "", pay, action) => {
         //e.preventDefault();
 
         const data = new FormData();
@@ -82,8 +82,10 @@ const Checkout = () => {
                     //notify("success", res.data.response);
                     //setRefresh(refresh + 1);
                     setCmdSlug(res.data.commandSlug);
-                    if (pay) {
+                    if (pay && action ==="") {
                         calltouchpay(res.data.response);
+                    }else{
+                        handleOnClickShare(cmdSlug)
                     }
                 } else {
                     //notify("error", res.data.response);
@@ -114,16 +116,19 @@ const Checkout = () => {
         /*SendPaymentInfos(order_number,agency_code,secure_code,domain_name,url_redirection_suc
             cess,url_redirection_failed,amount,city,email,clientFirstName,clientLastName,)*/
     };
-    const detectDevice = (type, pay,cmdSlug) =>{
+    const detectDevice = (type, pay) =>{
+
         if(isMobile && pay && appType.mobile){
-            handleOnClickShare(cmdSlug)
+            handleSubmit(type, pay, "mobile")
         }else{
-            handleSubmit(type, pay)
+            
+            handleSubmit(type, pay,"")
 
         }
     }
     const handleOnClickShare = (cmdSlug) => {
-        window.open(`http://market.africadefis.com/mm/paiement/${cmdSlug}`, '_blank');
+        console.log(`http://market.africadefis.com/mm/paiement/${cmdSlug}`)
+        //window.open(`http://market.africadefis.com/mm/paiement/${cmdSlug}`, '_blank');
       };
     
     return (
@@ -509,7 +514,7 @@ const Checkout = () => {
                                         data-bs-dismiss="modal"
                                         onClick={()=>{detectDevice(action.typeCommande, action.pay,cmdSlug)}}
                                     >
-                                        Continuer
+                                        Continuer/{cmdSlug}
                                     </button>
                                     <button
                                         type="button"
