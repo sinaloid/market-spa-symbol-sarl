@@ -72,7 +72,7 @@ const Checkout = () => {
         data.append("commandSlug", cmdSlug);
         data.append("produit", JSON.stringify(cart.content));
         //console.log(data.get("produit"))
-        let responseSlug = ""
+        
         apiClient
             .post("paiement", data, {
                 headers: { Authorization: `Bearer ${user.token}` },
@@ -83,7 +83,11 @@ const Checkout = () => {
                     //notify("success", res.data.response);
                     //setRefresh(refresh + 1);
                     setCmdSlug(res.data.commandSlug);
-                    responseSlug = res.data.commandSlug
+
+                    if(isMobile && pay && appType.mobile){
+                        window.open(`http://market.africadefis.com/mm/paiement/${res.data.commandSlug}`, '_blank');
+                    }
+
                     if (pay) {
                         calltouchpay(res.data.response);
                     }
@@ -97,7 +101,6 @@ const Checkout = () => {
                 //setRefresh(refresh + 1);
             });
         
-            return responseSlug;
     };
 
     const calltouchpay = (montant) => {
@@ -120,14 +123,7 @@ const Checkout = () => {
     };
     const detectDevice = (type, pay) =>{
         
-        if(isMobile && pay && appType.mobile){
-            responseSlug = handleSubmit(type, false)
-            handleOnClickShare(responseSlug)
-        }else{
-            
-            handleSubmit(type, pay)
-
-        }
+        
     }
     const handleOnClickShare = (responseSlug) => {
         window.open(`http://market.africadefis.com/mm/paiement/${responseSlug}`, '_blank');
@@ -514,9 +510,9 @@ const Checkout = () => {
                                         type="button"
                                         className="btn btn-afdefis-secondary"
                                         data-bs-dismiss="modal"
-                                        onClick={()=>{detectDevice(action.typeCommande, action.pay,cmdSlug)}}
+                                        onClick={()=>{handleSubmit(action.typeCommande, action.pay)}}
                                     >
-                                        Continuer/{cmdSlug}
+                                        Continuer
                                     </button>
                                     <button
                                         type="button"
