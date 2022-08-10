@@ -76,9 +76,7 @@ const CheckoutMobile = () => {
         data.append("produit", JSON.stringify(cart.content));
         //console.log(data.get("produit"))
         apiClient
-            .post("paiement", data, {
-                headers: { Authorization: `Bearer ${user.token}` },
-            })
+            .post("app/paiement", data)
             .then((res) => {
                 //console.log(res.data)
                 if (res.data.status === 200) {

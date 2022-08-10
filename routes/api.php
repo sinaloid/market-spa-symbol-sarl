@@ -59,6 +59,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::get('prod/{slug}', [Controller::class, 'get']);
     Route::get('detailcommandeAll/{slug}', [Controller::class, 'detailcommandeAll']);
     Route::get('faqAll', [Controller::class, 'faqAll']);
+    Route::post('app/paiement', [Controller::class, 'paiement']);
     Route::get('paiement/success/{slug}', [Controller::class, 'paiementSuccess']);
 
 });

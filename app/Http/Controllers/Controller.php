@@ -74,6 +74,86 @@ class Controller extends BaseController
         }
     }
 
+    public function paiement(Request $request){
+        
+        $etat_commande = $request->get("etat_commande");
+        $produits = $request->get("produit");
+        $produits = json_decode($produits);
+        $cmdSlug = $request->get("commandSlug");
+        $cmdId = '';
+        $cmd = [
+            'numero_commande'=> $this->getNumeroCommande(),
+            'prix_total' => 0,
+            'date' => Carbon::now(),
+            'etat_commande' => $etat_commande,
+            'etat_livraison' => "En cours",
+            'slug' => $this->generateRandomString(),
+            'user_id' => Auth::user()->id,
+        ];
+        //dd($request->all());
+        if($cmdSlug === "undefined"){
+            $cmdSave = Commande::create($cmd);
+            //$cmdId = $cmdSave->id;
+            $total = $this->createCommandeDetail($produits, $cmdSave->id);
+            //dd($total);
+            $cmdSave->prix_total = $total*1.18;
+            $cmdSave->update();
+            return response()->json([
+                'status' => 200,
+                'message' => "Votre commande a bien été enregistrer",
+                'commandSlug' => $cmdSave->slug,
+                'response' => $cmdSave->prix_total 
+            ],200);
+        }else{
+            $cmd = Commande::where('slug',$cmdSlug)->first();
+            if(isset($cmd)){
+                $cmdDetail = $cmd->commandeDetails()->first();
+                $cmdId = $cmd->id;
+                //dd($cmdDetail);
+                if(!isset($cmdDetail)){
+                    $total = $this->createCommandeDetail($produits, $cmdId);  
+                    $cmd->prix_total = $total*1.18;
+                    $cmd->update();
+                    return response()->json([
+                        'status' => 200,
+                        'message' => "Votre commande a bien été enregistrer",
+                        'commandSlug' => $cmd->slug,
+                        'response' => $cmd->prix_total
+                    ],200);
+                }
+                return response()->json([
+                    'status' => 200,
+                    'message' => "Votre commande existe déjà",
+                    'commandSlug' => $cmd->slug,
+                    'response' => $cmd->prix_total
+                ],200);
+            }
+            return 'La commande ne peut pas être restaurée';  
+        }
+    }
+
+    public function createCommandeDetail($produits, $cmdId){
+
+        $total = 0;
+
+        foreach($produits as $produit){
+            $prod  = Product::where('slug',$produit->id)->first();
+            //dd($prod);
+            $cmdDetail = [
+                'prix'=> $prod->prix,
+                'reduction'=> (isset($prod->reduction)) ? $prod->reduction()->first()->pourcentage : 0,
+                'quantite'=> $produit->quantite,
+                'commande_id'=> $cmdId,
+                'product_id'=> $prod->id,
+            ];
+            $tmp = CommandeDetail::create($cmdDetail);
+            $prix_unitaire = $tmp->prix * (1 - $tmp->reduction/100);
+            $total = ($prix_unitaire * $tmp->quantite) + $total;
+        }
+
+        return $total;
+    }
+
     public function productAll(){
         try {
             $temp = VenteRecommandation::where("type","Meilleure vente")->orderBy('updated_at', 'desc');
