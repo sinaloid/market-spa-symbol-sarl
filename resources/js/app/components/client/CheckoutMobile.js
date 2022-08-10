@@ -8,7 +8,7 @@ import url from "../../url";
 
 
 
-const Checkout = () => {
+const CheckoutMobile = () => {
     const authCtx = useContext(AppContext);
     const { user, onUserChange,cart, appType } = authCtx;
     const [info, setInfo] = useState([]);
@@ -26,16 +26,14 @@ const Checkout = () => {
     
 
     useEffect(() => {
-        if (user.token != null) {
-            let url = cmdSlug ? `commande/${cmdSlug}` : "userCommande";
-            
+        if (true) {
+            let url = cmdSlug ? `detailcommandeAll/${cmdSlug}` : "userCommande";
+            console.log(url);
 
             apiClient
-                .get(url, {
-                    headers: { Authorization: `Bearer ${user.token}` },
-                })
+                .get(url)
                 .then((res) => {
-                    console.log(res);
+                    //console.log(res);
                     if (user.type != res.data.user.type) {
                         user.type = res.data.user.type;
                         setType(user.type);
@@ -45,17 +43,22 @@ const Checkout = () => {
                         //console.log("user type not change : " + res.data.type);
                     }
                     setInfo(res.data.user);
-                    console.log(res.data.response);
+                    //console.log(res.data.response);
                     let prxTotal = 0;
-                    cart.content.forEach((data) => {
-                        prxTotal += data.prix * data.quantite;
-                    });
-                    setTotal(prxTotal);
-                    if(res.data.product !=null){
-                        setDatas(res.data.product)
+                    
+                    
+                    if(res.data.produits !=null){
+                        setDatas(res.data.produits)
+                        res.data.produits.forEach((data) => {
+                            prxTotal += data.prix * data.quantite;
+                        });
                     }else{
                         setDatas(cart.content)
+                        cart.content.forEach((data) => {
+                            prxTotal += data.prix * data.quantite;
+                        });
                     }
+                    setTotal(prxTotal);
                     
                 })
                 .catch((error) => {
@@ -115,16 +118,8 @@ const Checkout = () => {
             cess,url_redirection_failed,amount,city,email,clientFirstName,clientLastName,)*/
     };
     const detectDevice = (type, pay) =>{
-        if(isMobile && pay && appType.mobile){
-            handleOnClickShare()
-        }else{
-            handleSubmit(type, pay)
-
-        }
+        handleSubmit(type, pay)
     }
-    const handleOnClickShare = () => {
-        window.open(`http://market.africadefis.com/mm/paiement/${cmdSlug}`, '_blank');
-      };
     
     return (
         <>
@@ -532,4 +527,4 @@ const Checkout = () => {
     );
 };
 
-export default Checkout;
+export default CheckoutMobile;

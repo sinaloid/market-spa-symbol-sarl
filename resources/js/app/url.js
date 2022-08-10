@@ -9,7 +9,7 @@ const url = {
     'register': '/inscription',
     'checkout': '/paiement',
     'checkout_params': '/paiement/:commandSlug',
-    'checkout_app_paiement': '/app/paiement/:commandSlug',
+    'checkout_app_paiement': '/mm/paiement/:commandSlug',
     'checkout_success': '/paiement/sss/:commandSlug',
     'checkout_failed': '/paiement/echec',
     'dashboard': '/profile', //pour la redirection
@@ -42,8 +42,8 @@ const url = {
     'app_root': '/app/*',
     'app': '/app',
     'app_faqs': '/app/faqs',
-    'app_checkout': '/app/paiement',
-    'app_checkout_params': '/app/paiement/:commandSlug',
+    'app_checkout': '/mm/paiement',
+    'app_checkout_params': '/mm/paiement/:commandSlug',
     'app_produits': '/app/produits',
     'app_login': '/app/connexion',
     'app_dashboard': '/app/profile', //pour la redirection

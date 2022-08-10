@@ -30,6 +30,7 @@ import Marque from "./components/profile/contents/Marque";
 import RecommandationVente from "./components/profile/contents/RecommandationVente";
 import PaiementFailed from "./components/client/body/contents/PaiementFailed";
 import PaiementSuccess from "./components/client/body/contents/PaiementSuccess";
+import CheckoutMobile from "./components/client/CheckoutMobile";
 
 const notFound = <NotFound />
 const appRoutes = [
@@ -53,8 +54,8 @@ const bodyRoutes = [
   { path: url.app_login, element: <Login /> },
   { path: url.register, element: <Register /> },
   { path: url.checkout, element: <Checkout /> },
-  { path: url.app_checkout, element: <Checkout /> },
-  { path: url.app_checkout_params, element: <Checkout /> },
+  { path: url.app_checkout, element: <CheckoutMobile /> },
+  { path: url.app_checkout_params, element: <CheckoutMobile /> },
   { path: url.checkout_params, element: <Checkout /> },
   { path: url.checkout_app_paiement, element: <Checkout /> },
   { path: url.checkout_success, element: <PaiementSuccess /> },

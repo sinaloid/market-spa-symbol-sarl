@@ -29,6 +29,51 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public function detailcommandeAll($slug)
+    {
+        try {
+            //$cmd = Commande::where('slug',$slug);
+            $data = Commande::where('slug',$slug)->first();
+            $cmdDetail=[];
+            if(isset($data)){
+                $tmpCmdDetail = $data->commandeDetails()->get();
+                foreach($tmpCmdDetail as $cData){
+                    array_push($cmdDetail,[
+                        "produit" => $cData->product->libelle,
+                        "quantite" => $cData->quantite,
+                        "prix" => $cData->prix * (1 - $data->reduction/100),
+                    ]);
+                }
+                $user = [
+                    'type' => $data->user->type,
+                    'nom' => $data->user->nom,
+                    'email' => $data->user->email,
+                    'slug' => $data->user->slug,
+                    'numero' => $data->user->numero,
+                    'commune' => $data->user->commune->nom_commune,
+                    'date' => $data->date, //date('j/m/y'),
+                    'fact' =>  $data->numero_commande //$this->getNumeroCommande(),
+                ];
+                //dd($user);
+                return response()->json([
+                    'status' => 200,
+                    'user' => $user,
+                    'response' => $data,
+                    'produits' => $cmdDetail
+                ]);
+            }
+            return response()->json([
+                'status' => 404,
+                'response' => 'Donnée inexistante'
+            ]);
+        }catch (Exception $exception){
+            return response()->json([
+                'status' => 404,
+                'response' => 'Un problème vous empêche de continuer'
+            ]);
+        }
+    }
+
     public function productAll(){
         try {
             $temp = VenteRecommandation::where("type","Meilleure vente")->orderBy('updated_at', 'desc');

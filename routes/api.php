@@ -57,6 +57,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::post('user/role', [Controller::class, 'userRole']);
     Route::get('productAll', [Controller::class, 'productAll']);
     Route::get('prod/{slug}', [Controller::class, 'get']);
+    Route::get('detailcommandeAll/{slug}', [Controller::class, 'detailcommandeAll']);
     Route::get('faqAll', [Controller::class, 'faqAll']);
     Route::get('paiement/success/{slug}', [Controller::class, 'paiementSuccess']);
 
