@@ -126,8 +126,7 @@ const Checkout = () => {
         }
     }
     const handleOnClickShare = (cmdSlug) => {
-        console.log(`http://market.africadefis.com/mm/paiement/${cmdSlug}`)
-        //window.open(`http://market.africadefis.com/mm/paiement/${cmdSlug}`, '_blank');
+        window.open(`http://market.africadefis.com/mm/paiement/${cmdSlug}`, '_blank');
       };
     
     return (
