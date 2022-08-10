@@ -33,17 +33,8 @@ const CheckoutMobile = () => {
             apiClient
                 .get(url)
                 .then((res) => {
-                    //console.log(res);
-                    if (user.type != res.data.user.type) {
-                        user.type = res.data.user.type;
-                        setType(user.type);
-                        onUserChange(user);
-                        //console.log("user type change : " + res.data.type);
-                    } else {
-                        //console.log("user type not change : " + res.data.type);
-                    }
+                    
                     setInfo(res.data.user);
-                    //console.log(res.data.response);
                     let prxTotal = 0;
                     
                     
