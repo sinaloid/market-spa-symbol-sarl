@@ -82,6 +82,9 @@ const Checkout = () => {
                     //notify("success", res.data.response);
                     //setRefresh(refresh + 1);
                     setCmdSlug(res.data.commandSlug);
+                    if (pay) {
+                        calltouchpay(res.data.response);
+                    }
                 } else {
                     //notify("error", res.data.response);
                     //setRefresh(refresh + 1);
@@ -112,16 +115,19 @@ const Checkout = () => {
             cess,url_redirection_failed,amount,city,email,clientFirstName,clientLastName,)*/
     };
     const detectDevice = (type, pay,cmdSlug) =>{
-        handleSubmit(type, pay)
+        
         if(isMobile && pay && appType.mobile){
+            handleSubmit(type, false)
             handleOnClickShare(cmdSlug)
-        }
-        if (pay) {
-            calltouchpay(res.data.response);
+        }else{
+            
+            handleSubmit(type, pay)
+
         }
     }
     const handleOnClickShare = (cmdSlug) => {
-        window.open(`http://market.africadefis.com/mm/paiement/${cmdSlug}`, '_blank');
+        console.log(`http://market.africadefis.com/mm/paiement/${cmdSlug}`)
+        //window.open(`http://market.africadefis.com/mm/paiement/${cmdSlug}`, '_blank');
       };
     
     return (
