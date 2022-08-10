@@ -72,6 +72,7 @@ const Checkout = () => {
         data.append("commandSlug", cmdSlug);
         data.append("produit", JSON.stringify(cart.content));
         //console.log(data.get("produit"))
+        let responseSlug = ""
         apiClient
             .post("paiement", data, {
                 headers: { Authorization: `Bearer ${user.token}` },
@@ -82,6 +83,7 @@ const Checkout = () => {
                     //notify("success", res.data.response);
                     //setRefresh(refresh + 1);
                     setCmdSlug(res.data.commandSlug);
+                    responseSlug = res.data.commandSlug
                     if (pay) {
                         calltouchpay(res.data.response);
                     }
@@ -94,6 +96,8 @@ const Checkout = () => {
                 //notify("error", error.response.data.message);
                 //setRefresh(refresh + 1);
             });
+        
+            return responseSlug;
     };
 
     const calltouchpay = (montant) => {
@@ -114,19 +118,19 @@ const Checkout = () => {
         /*SendPaymentInfos(order_number,agency_code,secure_code,domain_name,url_redirection_suc
             cess,url_redirection_failed,amount,city,email,clientFirstName,clientLastName,)*/
     };
-    const detectDevice = (type, pay,cmdSlug) =>{
+    const detectDevice = (type, pay) =>{
         
         if(isMobile && pay && appType.mobile){
-            handleSubmit(type, false)
-            handleOnClickShare()
+            responseSlug = handleSubmit(type, false)
+            handleOnClickShare(responseSlug)
         }else{
             
             handleSubmit(type, pay)
 
         }
     }
-    const handleOnClickShare = () => {
-        window.open(`http://market.africadefis.com/mm/paiement/${cmdSlug}`, '_blank');
+    const handleOnClickShare = (responseSlug) => {
+        window.open(`http://market.africadefis.com/mm/paiement/${responseSlug}`, '_blank');
       };
     
     return (
