@@ -114,15 +114,15 @@ const Checkout = () => {
         /*SendPaymentInfos(order_number,agency_code,secure_code,domain_name,url_redirection_suc
             cess,url_redirection_failed,amount,city,email,clientFirstName,clientLastName,)*/
     };
-    const detectDevice = (type, pay) =>{
+    const detectDevice = (type, pay,cmdSlug) =>{
         if(isMobile && pay && appType.mobile){
-            handleOnClickShare()
+            handleOnClickShare(cmdSlug)
         }else{
             handleSubmit(type, pay)
 
         }
     }
-    const handleOnClickShare = () => {
+    const handleOnClickShare = (cmdSlug) => {
         window.open(`http://market.africadefis.com/mm/paiement/${cmdSlug}`, '_blank');
       };
     
@@ -507,7 +507,7 @@ const Checkout = () => {
                                         type="button"
                                         className="btn btn-afdefis-secondary"
                                         data-bs-dismiss="modal"
-                                        onClick={()=>{detectDevice(action.typeCommande, action.pay)}}
+                                        onClick={()=>{detectDevice(action.typeCommande, action.pay,cmdSlug)}}
                                     >
                                         Continuer
                                     </button>
