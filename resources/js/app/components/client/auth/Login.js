@@ -16,8 +16,6 @@ const Login = () => {
     const authCtx = useContext(AppContext);
     const { user, onUserChange } = authCtx;
     const navigate = useNavigate();
-    const app = "app"
-    const path = window.location.pathname
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -55,9 +53,7 @@ const Login = () => {
     };
     if (user.isAuth === true && user.token != null) {
         console.log(`connexion reussi, isAuth: ${user}`);
-        if(path.includes(app)){
-            return navigate("/app/profile" + "/" + url.dashboard_home);
-        }
+        
         return navigate(url.dashboard + "/" + url.dashboard_home);
     }
 

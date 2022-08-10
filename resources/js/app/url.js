@@ -9,7 +9,7 @@ const url = {
     'register': '/inscription',
     'checkout': '/paiement',
     'checkout_params': '/paiement/:commandSlug',
-    'checkout_app_paiement': '/paiement/app/:commandSlug',
+    'checkout_app_paiement': '/app/paiement/:commandSlug',
     'checkout_success': '/paiement/sss/:commandSlug',
     'checkout_failed': '/paiement/echec',
     'dashboard': '/profile', //pour la redirection

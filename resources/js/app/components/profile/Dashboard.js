@@ -385,7 +385,7 @@ const Dashboard = () => {
                 </>
             ) : (
                 <>
-                    {(path.includes(app)) ? <Navigate to={url.app_login} /> : <Navigate to={url.login} />}
+                    <Navigate to={url.login} />
 
                     
                 

@@ -6,18 +6,19 @@ import { AppContext } from "../../context/context";
 import apiClient from "../../services/api";
 import url from "../../url";
 
+console.log(encryptedString);
+
 const Checkout = () => {
     const authCtx = useContext(AppContext);
-    const { user, onUserChange } = authCtx;
-    const cartCtx = useContext(AppContext);
-    const { cart, onCartChange } = cartCtx;
+    const { user, onUserChange,cart, appType } = authCtx;
     const [info, setInfo] = useState([]);
     const [total, setTotal] = useState(0);
     const [action, setAction] = useState({
         typeCommande:'',
         pay:false
     });
-    let { commandSlug } = useParams();
+    let {commandSlug} = useParams();
+    const [cmdSlug, setCmdSlug] = useState(commandSlug)
     const payNow = "ne pas enregistrer";
     const payAfter = "enregistrer";
     const path = window.location.pathname;
@@ -25,7 +26,7 @@ const Checkout = () => {
 
     useEffect(() => {
         if (user.token != null) {
-            let url = commandSlug ? `commande/${commandSlug}` : "userCommande";
+            let url = cmdSlug ? `commande/${cmdSlug}` : "userCommande";
             console.log(url);
 
             apiClient
@@ -61,7 +62,7 @@ const Checkout = () => {
 
         const data = new FormData();
         data.append("etat_commande", type);
-        data.append("commandSlug", commandSlug);
+        data.append("commandSlug", cmdSlug);
         data.append("produit", JSON.stringify(cart.content));
         //console.log(data.get("produit"))
         apiClient
@@ -73,7 +74,7 @@ const Checkout = () => {
                 if (res.data.status === 200) {
                     //notify("success", res.data.response);
                     //setRefresh(refresh + 1);
-                    commandSlug = res.data.commandSlug;
+                    setCmdSlug(res.data.commandSlug);
                     if (pay) {
                         calltouchpay(res.data.response);
                     }
@@ -94,7 +95,7 @@ const Checkout = () => {
             "BFSYM1874",
             "BXO4O$xdC6MR^GuTPEQF88M?WkW@%t0s1KL$AbGxcrVZYWNh7q",
             "symbol.bf",
-            `http://market.africadefis.com/paiement/success/${commandSlug}`,
+            `http://market.africadefis.com/paiement/success/${cmdSlug}`,
             "http://market.africadefis.com/paiement/echec",
             montant,
             info.commune,
@@ -107,7 +108,7 @@ const Checkout = () => {
             cess,url_redirection_failed,amount,city,email,clientFirstName,clientLastName,)*/
     };
     const detectDevice = (type, pay) =>{
-        if(isMobile && pay){
+        if(isMobile && pay && appType.mobile){
             handleOnClickShare()
         }else{
             handleSubmit(type, pay)
@@ -116,12 +117,12 @@ const Checkout = () => {
     }
     const handleOnClickShare = () => {
         alert("ok");
-        window.open(`http://market.africadefis.com/paiement/app/${commandSlug}`, '_blank');
+        window.open(`http://market.africadefis.com/app/paiement/${cmdSlug}`, '_blank');
       };
     
     return (
         <>
-            {user.isAuth ? (
+            {(user.isAuth || path.includes('app')) ? (
                 <>
                     <main>
                         <div className="row">
@@ -518,11 +519,7 @@ const Checkout = () => {
                 </>
             ) : (
                 <>
-                    {path.includes(app) ? (
-                        <Navigate to={url.app_login} />
-                    ) : (
-                        <Navigate to={url.login} />
-                    )}
+                    <Navigate to={url.login} />
                 </>
             )}
         </>

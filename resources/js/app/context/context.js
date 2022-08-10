@@ -16,18 +16,26 @@ export const initialCart = {
     content: []
 }
 
+export const initAppType = {
+    mobile: false
+}
+
 export const AppContext = createContext({
     user: initialUser,
     onUserChange: (data) => {},
 
     cart: initialCart,
     onCartChange: (data) => {},
+
+    appType: initAppType,
+    onAppTypeChange: (data) => {},
 })
 
 
 export const AppContextProvider = ({children}) => {
     const usrLocal = getUser('user') || initialUser //recuperation de l'utilisateur dans localStorage
     const cartLocal = getProduit() || initialCart
+    
     
     const [usr, setUser] = useState(usrLocal) // initialisation de l'utilisateur
     console.log(`user is get AuthContextProvider: ${usr}`)
@@ -43,6 +51,11 @@ export const AppContextProvider = ({children}) => {
         setProduit(c)
     }
 
+    const [appType, setAppType] = useState(initAppType)
+    const handleAppTypeChange = (c) => {
+        setAppType(c)
+    }
+
     
 
     const contextValue = {
@@ -50,6 +63,8 @@ export const AppContextProvider = ({children}) => {
         onUserChange: handleAuthChange,
         cart: crt,
         onCartChange: handleCartChange,
+        appType: appType,
+        onAppTypeChange:handleAppTypeChange,
     }
 
     return(

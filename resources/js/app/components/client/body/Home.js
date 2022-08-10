@@ -1,4 +1,5 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
+import { AppContext } from "../../../context/context";
 import apiClient from "../../../services/api";
 import BestSeller from "./BestSeller";
 import Carousel from "./Carousel";
@@ -12,6 +13,8 @@ import NewProduct from "./NewProduct";
 import Recommandation from "./Recommadation";
 
 const Home = () => {
+    const appTypeCtx = useContext(AppContext)
+    const {appType} = appTypeCtx
     const path = window.location.pathname;
 
     const [datas, setDatas] = useState([]);
@@ -57,7 +60,7 @@ const Home = () => {
                     <HomeProduitList datas={datas.recommandation} title={"Nos recommandations"} />
                 )}
             </div>
-            {path != "/app" && (
+            {!appType.mobile && (
                 <DownloadApp />
             )}
         </main>

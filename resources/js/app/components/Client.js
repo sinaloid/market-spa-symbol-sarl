@@ -1,23 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AppContext } from "../context/context";
 import Body from "./client/Body";
 import Footer from "./client/Footer";
 import Header from "./client/Header";
 import Panier from "./client/header/Panier";
 
 const Client = () =>{
-    const app = "app"
+    const appTypeCtx = useContext(AppContext)
+    const {appType} = appTypeCtx
     const path = window.location.pathname
     return(
 
         <div className="col-12">
-            {!path.includes(app)  && <Header />}
+            {!appType.mobile  && <Header />}
             <Body />
-            {path.includes(app) && !path.includes('connexion') && !path.includes('faqs') && 
-                <button class="float">
-                <Panier path={'app'} color="#ffffff" classe="" size="fa-xl" />
+            {appType.mobile && !path.includes('connexion') && !path.includes('faqs') && 
+                <button className="float">
+                <Panier path={'app'} color="#ffffff" className="" size="fa-xl" />
                 </button>
             }
-            {!path.includes(app) && <Footer />}
+            {!appType.mobile && <Footer />}
         </div>
     );
 }
