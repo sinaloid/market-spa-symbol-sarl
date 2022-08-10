@@ -118,14 +118,14 @@ const Checkout = () => {
         
         if(isMobile && pay && appType.mobile){
             handleSubmit(type, false)
-            handleOnClickShare(cmdSlug)
+            handleOnClickShare()
         }else{
             
             handleSubmit(type, pay)
 
         }
     }
-    const handleOnClickShare = (cmdSlug) => {
+    const handleOnClickShare = () => {
         window.open(`http://market.africadefis.com/mm/paiement/${cmdSlug}`, '_blank');
       };
     
