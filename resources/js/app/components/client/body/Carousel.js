@@ -1,5 +1,7 @@
 import React from "react";
 import './carousel.css'
+import banier1 from '../../../assets/img/baniere1.jpeg'
+import banier2 from '../../../assets/img/baniere2.jpeg'
 
 const Carousel = () => {
   return (
@@ -34,20 +36,10 @@ const Carousel = () => {
       </div>
       <div className="carousel-inner">
         <div className="carousel-item">
-          <svg
-            className="bd-placeholder-img"
-            width="100%"
-            height="100%"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            preserveAspectRatio="xMidYMid slice"
-            focusable="false"
-          >
-            <rect width="100%" height="100%" fill="#777"></rect>
-          </svg>
-
+          
+          <img className="bd-placeholder-img" width="100%" height="auto" src={banier1} alt="" />
           <div className="container">
-            <div className="carousel-caption text-start">
+            {/*<div className="carousel-caption text-start">
               <h1 className="display-1">Example headline.</h1>
               <p>
                 Some representative placeholder content for the first slide of
@@ -58,24 +50,15 @@ const Carousel = () => {
                     J'achète
                 </a>
               </p>
-            </div>
+            </div>*/}
           </div>
         </div>
         <div className="carousel-item active">
-          <svg
-            className="bd-placeholder-img"
-            width="100%"
-            height="100%"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            preserveAspectRatio="xMidYMid slice"
-            focusable="false"
-          >
-            <rect width="100%" height="100%" fill="#777"></rect>
-          </svg>
+        <img className="bd-placeholder-img" width="100%" height="auto" src={banier2} alt="" />
+          
 
           <div className="container">
-            <div className="carousel-caption">
+            {/*<div className="carousel-caption">
               <h1 className="display-1">Another example headline.</h1>
               <p>
                 Some representative placeholder content for the second slide of
@@ -86,7 +69,7 @@ const Carousel = () => {
                   En savoir plus
                 </a>
               </p>
-            </div>
+            </div>*/}
           </div>
         </div>
         <div className="carousel-item">
