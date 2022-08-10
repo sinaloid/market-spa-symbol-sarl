@@ -6,7 +6,7 @@ import { AppContext } from "../../context/context";
 import apiClient from "../../services/api";
 import url from "../../url";
 
-console.log(encryptedString);
+
 
 const Checkout = () => {
     const authCtx = useContext(AppContext);
