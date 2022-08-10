@@ -1,4 +1,6 @@
 import React from "react";
+import banner4 from "../../../../assets/img/banner4.jpg"
+import banner5 from "../../../../assets/img/banner5.jpg"
 import { Link } from "react-router-dom";
 
 const About = () => {
@@ -33,44 +35,14 @@ const About = () => {
         </div>
         <div className="col-12 col-lg-7 mx-auto pt-3">
           <div className="p-4">
-            <svg
-              className="bd-placeholder-img card-img-top"
-              width="100%"
-              height="225"
-              xmlns="http://www.w3.org/2000/svg"
-              role="img"
-              aria-label="Placeholder: Thumbnail"
-              preserveAspectRatio="xMidYMid slice"
-              focusable="false"
-            >
-              <title>Placeholder</title>
-              <rect width="100%" height="100%" fill="#55595c"></rect>
-              <text x="50%" y="50%" fill="#eceeef" dy=".3em">
-                Thumbnail
-              </text>
-            </svg>
+            <img className="bd-placeholder-img" width="100%" height="auto" src={banner4} alt="" />
           </div>
         </div>
       </div>
       <div className="col-12 col-md-10 mx-auto px-0 py-4 d-flex flex-wrap">
         <div className="col-12 col-lg-7 mx-auto pt-3">
           <div className="p-4">
-            <svg
-              className="bd-placeholder-img card-img-top"
-              width="100%"
-              height="225"
-              xmlns="http://www.w3.org/2000/svg"
-              role="img"
-              aria-label="Placeholder: Thumbnail"
-              preserveAspectRatio="xMidYMid slice"
-              focusable="false"
-            >
-              <title>Placeholder</title>
-              <rect width="100%" height="100%" fill="#55595c"></rect>
-              <text x="50%" y="50%" fill="#eceeef" dy=".3em">
-                Thumbnail
-              </text>
-            </svg>
+            <img className="bd-placeholder-img" width="100%" height="auto" src={banner5} alt="" />
           </div>
         </div>
         <div className="col-12 col-lg-5">
