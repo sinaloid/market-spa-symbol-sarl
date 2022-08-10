@@ -81,6 +81,10 @@ class Controller extends BaseController
         $produits = json_decode($produits);
         $cmdSlug = $request->get("commandSlug");
         $cmdId = '';
+        $cm = Commande::where('slug',$cmdSlug)->first();
+        if(!isset($cm)){
+            return;
+        }
         $cmd = [
             'numero_commande'=> $this->getNumeroCommande(),
             'prix_total' => 0,
@@ -88,12 +92,12 @@ class Controller extends BaseController
             'etat_commande' => $etat_commande,
             'etat_livraison' => "En cours",
             'slug' => $this->generateRandomString(),
-            'user_id' => Auth::user()->id,
+            'user_id' => $cm->user->id,
         ];
-        //dd($request->all());
+        //dd($cmd);
         if($cmdSlug === "undefined"){
             $cmdSave = Commande::create($cmd);
-            //$cmdId = $cmdSave->id;
+            //$cmd = $cmdSave->id;
             $total = $this->createCommandeDetail($produits, $cmdSave->id);
             //dd($total);
             $cmdSave->prix_total = $total*1.18;
@@ -153,7 +157,9 @@ class Controller extends BaseController
 
         return $total;
     }
-
+    public function getNumeroCommande(){
+        return "SYM-".date("j")."".date("m")."".date("y")."".date("h")."".date("m")."".date("s");
+    }
     public function productAll(){
         try {
             $temp = VenteRecommandation::where("type","Meilleure vente")->orderBy('updated_at', 'desc');
