@@ -162,8 +162,9 @@ class Controller extends BaseController
     }
     public function productAll(){
         try {
-            $temp = VenteRecommandation::where("type","Meilleure vente")->orderBy('updated_at', 'desc');
+            $temp = VenteRecommandation::where("type","Meilleure vente")->orderBy('updated_at', 'desc')->get();
             $meilleurVente = $this->listProduct($temp);
+
             
             $temp = VenteRecommandation::where("type","Produit recommandé")->orderBy('updated_at', 'desc')->paginate(8);
             $recommandation = $this->listProduct($temp);
