@@ -19,7 +19,8 @@ class VerifyEmail
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::guard('api')->check() && isset($request->user()->email_verified_at)) {
+        //if (Auth::guard('api')->check() && isset($request->user()->email_verified_at)) {
+        if (Auth::guard('api')->check()) {
             return $next($request);
         }
         $message = ["message" => "Votre email n'est pas verifier !"];
