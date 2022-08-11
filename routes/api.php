@@ -65,7 +65,8 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 });
 
 
-Route::middleware(['auth:api','api.verify.email'])->group(function () {
+//Route::middleware(['auth:api','api.verify.email'])->group(function () {
+Route::middleware(['auth:api'])->group(function () {
     require __DIR__.'/custom_routes/client.php';
     require __DIR__.'/custom_routes/vendeur.php';
     require __DIR__.'/custom_routes/admin.php';

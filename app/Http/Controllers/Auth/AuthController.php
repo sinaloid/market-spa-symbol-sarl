@@ -33,7 +33,7 @@ class AuthController extends Controller
         //$request['type'] = $request['type'] ? $request['type']  : 0;
         $request['type'] = 0;
         $request['image'] = "";
-        $user = User::create($request->toArray())->sendEmailVerificationNotification();
+        $user = User::create($request->toArray());//->sendEmailVerificationNotification();
         $userCompteur = Compteur::get()->first();
         if(isset($userCompteur)){
             $userCompteur->nombre_user++;
