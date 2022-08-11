@@ -59,10 +59,10 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         if ($user) {
 
-            if($user->email_verified_at == null){
+            /*if($user->email_verified_at == null){
                 $message = ["message" => "Votre email n'est pas verifier !"];
                 return response()->json($message, 401);
-            }
+            }*/
             if (Hash::check($request->password, $user->password)) {
                 $tokenResult = $user->createToken('Laravel Password Grant Client');
                 if ($request->remember_me){
