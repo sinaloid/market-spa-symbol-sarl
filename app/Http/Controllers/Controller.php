@@ -225,7 +225,7 @@ class Controller extends BaseController
                 array_push($datas,[
                     "libelle" => $tmp->libelle,
                     "prix" => $tmp->prix,
-                    "image" => $tmp->images()->first()->nom_image,
+                    "image" => ($tmp->images()->first() != null) ? $tmp->images()->first()->nom_image: '',
                     "slug" => $tmp->slug,
                     "categorie" => $tmp->categorie->nom_categorie,
                     //"description" => $tmp->product->description,

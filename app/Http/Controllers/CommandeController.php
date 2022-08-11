@@ -193,6 +193,29 @@ class CommandeController extends Controller
              ]);
          }
     }
+
+    public function paiementDetele($slug){
+        try {
+            $data = Paiement::where('slug',$slug);
+            $tmp = $data->first();
+            if(isset($tmp) &&  Auth::user()->type == 2){
+                $data->delete();
+                return response()->json([
+                    'status' => 200,
+                    'response' => 'Suppression de données réussies'
+                ]);
+            }
+            return response()->json([
+                'status' => 404,
+                'response' => isset($tmp) ? 'Permission Refuser' : 'Donnée inexistante'
+            ]);
+        }catch (Exception $exception){
+            return response()->json([
+                'status' => 404,
+                'response' => 'Un problème vous empêche de continuer'
+            ]);
+        }
+    }
     /**
      * Store a newly created resource in storage.
      *

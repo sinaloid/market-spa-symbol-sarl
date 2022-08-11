@@ -87,5 +87,7 @@ Route::middleware(['auth:api','api.verify.email'])->group(function () {
     Route::get('userCommande', [CommandeController::class, 'userCommande']);
     Route::post('paiement', [CommandeController::class, 'paiement']);
     Route::get('paiement/list', [CommandeController::class, 'paiementList']);
+    Route::delete('paiement/detele/{slug}', [CommandeController::class, 'paiementDetele']);
+
 
 });
