@@ -19,19 +19,10 @@ const Cart = () => {
                     headers: { Authorization: `Bearer ${user.token}` },
                 })
                 .then((res) => {
-                    //console.log(res.data);
                     setUserSlug(res.data.slug);
-                    if (user.type != res.data.type) {
-                        user.type = res.data.type;
-                        setType(user.type);
-                        onUserChange(user);
-                        //console.log("user type change : " + res.data.type);
-                    } else {
-                        //console.log("user type not change : " + res.data.type);
-                    }
                 })
                 .catch((error) => {
-                    console.log(error.response);
+                    console.log(error);
                 });
         }
     }, []);

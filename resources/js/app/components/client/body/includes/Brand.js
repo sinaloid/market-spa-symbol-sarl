@@ -20,7 +20,7 @@ const Brand = ({datas = []}) => {
       <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
         {datas.map((data, idx) => {
           return (
-            <div key={idx} className="col">
+            <div key={idx} className="col mx-auto">
               <div className="card shadow-sm p-1">
                 <img
                   className=""

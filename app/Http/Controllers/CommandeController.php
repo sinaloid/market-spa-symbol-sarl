@@ -19,7 +19,7 @@ class CommandeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['api.admin'],['except' => ['index', 'show', 'userCommande']]);
+        $this->middleware(['api.admin'],['except' => ['index', 'show', 'userCommande', 'paiement']]);
     }
     /**
      * Display a listing of the resource.

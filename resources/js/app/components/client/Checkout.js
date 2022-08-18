@@ -35,17 +35,7 @@ const Checkout = () => {
                     headers: { Authorization: `Bearer ${user.token}` },
                 })
                 .then((res) => {
-                    console.log(res);
-                    if (user.type != res.data.user.type) {
-                        user.type = res.data.user.type;
-                        setType(user.type);
-                        onUserChange(user);
-                        //console.log("user type change : " + res.data.type);
-                    } else {
-                        //console.log("user type not change : " + res.data.type);
-                    }
                     setInfo(res.data.user);
-                    console.log(res.data.response);
                     let prxTotal = 0;
                     cart.content.forEach((data) => {
                         prxTotal += data.prix * data.quantite;
@@ -78,18 +68,17 @@ const Checkout = () => {
                 headers: { Authorization: `Bearer ${user.token}` },
             })
             .then((res) => {
-                //console.log(res.data)
+                //console.log(res)
                 if (res.data.status === 200) {
                     //notify("success", res.data.response);
                     //setRefresh(refresh + 1);
                     setCmdSlug(res.data.commandSlug);
-
                     if(isMobile && pay && appType.mobile){
                         window.open(`http://market.africadefis.com/mm/paiement/${res.data.commandSlug}`, '_blank');
                     }
 
                     if (pay) {
-                        calltouchpay(res.data.response);
+                        calltouchpay(res.data.response, res.data.commandSlug);
                     }
                 } else {
                     //notify("error", res.data.response);
@@ -103,13 +92,13 @@ const Checkout = () => {
         
     };
 
-    const calltouchpay = (montant) => {
+    const calltouchpay = (montant, slug) => {
         sendPaymentInfos(
             new Date().getTime(),
             "BFSYM1874",
             "BXO4O$xdC6MR^GuTPEQF88M?WkW@%t0s1KL$AbGxcrVZYWNh7q",
             "symbol.bf",
-            `http://market.africadefis.com/paiement/success/${cmdSlug}`,
+            `http://market.africadefis.com/paiement/success/${slug}`,
             "http://market.africadefis.com/paiement/echec",
             montant,
             info.commune,
