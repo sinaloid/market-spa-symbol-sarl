@@ -255,6 +255,10 @@ important
   color: white;
 }
 
+.delete-overflow{
+  word-wrap: break-word !important;
+}
+
 @media screen and (max-width: 768px) {
 
   

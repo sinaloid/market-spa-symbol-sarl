@@ -200,7 +200,7 @@ const CustomerTable = ({clientType}) => {
                                     Avatar
                                 </label>
                                 <input
-                                    type="text"
+                                    type="file"
                                     className="form-control"
                                     id="image"
                                     value={image}

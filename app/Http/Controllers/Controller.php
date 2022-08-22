@@ -241,7 +241,7 @@ class Controller extends BaseController
                 array_push($datas,[
                     "libelle" => $tmp->product->libelle,
                     "prix" => $tmp->product->prix * ( 1 - $tmp->pourcentage/100),
-                    "image" => $tmp->product->images()->first()->nom_image,
+                    "image" => ($tmp->product->images()->first() != null) ? $tmp->product->images()->first()->nom_image: '', 
                     "slug" => $tmp->product->slug,
                     "categorie" => $tmp->product->categorie->nom_categorie,
                     //"description" => $tmp->product->description,
@@ -255,7 +255,7 @@ class Controller extends BaseController
             array_push($datas,[
                 "libelle" => $tmp->product->libelle,
                 "prix" => $tmp->product->prix,
-                "image" => $tmp->product->images()->first()->nom_image,
+                "image" => ($tmp->product->images()->first() != null) ? $tmp->product->images()->first()->nom_image: '', 
                 "slug" => $tmp->product->slug,
                 "categorie" => $tmp->product->categorie->nom_categorie,
                 //"description" => $tmp->product->description,

@@ -89,6 +89,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('paiement', [CommandeController::class, 'paiement']);
     Route::get('paiement/list', [CommandeController::class, 'paiementList']);
     Route::delete('paiement/detele/{slug}', [CommandeController::class, 'paiementDetele']);
+    Route::delete('image/detele/{img}', [ProductController::class, 'deleteProductImage']);
 
 
 });

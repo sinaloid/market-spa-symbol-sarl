@@ -69,8 +69,9 @@ class ProductController extends Controller
                     "sku" => $product->sku,
                     "stock" => $product->stock,
                     "prix" => $product->prix,
-                    "image" => $product->image,
+                    "image" => $product->images()->get('nom_image'),
                     "slug" => $product->slug,
+                    "description" => $product->description,
                 ]);
             }
             //dd($datas);
@@ -95,7 +96,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+        dd($request->all());
         $request['slug'] = $this->generateRandomString();
         $request['user_id'] = Auth::id();
         $request['image'] = "mmm"; //a supprimer
@@ -196,6 +197,8 @@ class ProductController extends Controller
      */
     public function update(Request $request, $slug)
     {
+        //dd($request->all());
+
         $request['slug'] = $this->generateRandomString();
         $request['user_id'] = Auth::id();
         $request['categorie_id'] = Categorie::where('slug', $request['categorie_id'])->first();
@@ -206,7 +209,6 @@ class ProductController extends Controller
                 'response' => "Un problème vous empêche de continuer: la categorie n'exist pas"
             ]);
         }
-        
         $request['categorie_id'] = $request['categorie_id']->id;
         $validator = Validator::make($request->all(), $this->dataToValidate("update"));
         if ($validator->fails()) {
@@ -228,6 +230,16 @@ class ProductController extends Controller
                     $data->description = $request->get('description');
                     $data->categorie_id = $request->get('categorie_id');
                     $data->update();
+                    foreach($request->file('images') as $image) {
+                        $filename = time().rand(1,900). '.'.$image->getClientOriginalExtension();
+                        $image->move('uploads/', $filename);
+        
+                        Image::create([
+                            'nom_image' => $filename,
+                            'product_id' => $data->id
+                        ]);
+                    }
+
                     return response()->json([
                         'status' => 200,
                         'response' => 'Modification de données réussies'
@@ -282,6 +294,35 @@ class ProductController extends Controller
                 }
                 $reduc->delete();
                 $imgsTodelete->delete();
+                $data->delete();
+                return response()->json([
+                    'status' => 200,
+                    'response' => 'Suppression de données réussies'
+                ]);
+            }
+            return response()->json([
+                'status' => 404,
+                'response' => isset($tmp) ? 'Permission Refuser' : 'Donnée inexistante'
+            ]);
+        }catch (Exception $exception){
+            return response()->json([
+                'status' => 404,
+                'response' => 'Un problème vous empêche de continuer'
+            ]);
+        }
+    }
+
+    public function deleteProductImage($img)
+    {
+        try {
+            $data = Image::where('nom_image',$img);
+            $tmp = $data->first();
+            if(isset($tmp) &&  (Auth::id() == $tmp->user_id || Auth::user()->type == 2)){
+                
+                $image_path = "uploads/".$tmp->nom_image;  // Value is not URL but directory file path
+                    if(File::exists($image_path)) {
+                        File::delete($image_path);
+                    }
                 $data->delete();
                 return response()->json([
                     'status' => 200,

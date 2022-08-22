@@ -269,6 +269,17 @@ class ClientVendeurController extends Controller
             $data = User::where('id',$slug);
             $tmp = $data->first();
             if(isset($tmp) &&  (Auth::user()->type == 2) && (Auth::user()->id != $tmp->id) && ($tmp->type != 2)){
+                $userCompteur = Compteur::get()->first();
+                    if(isset($userCompteur)){
+                        $userCompteur->nombre_user--;
+                        if($tmp->type == 0){
+                            $userCompteur->nombre_acheteur--;
+                        }else{
+                            $userCompteur->nombre_vendeur--;
+                        }
+                        $userCompteur->save();
+                    }
+
                 $data->delete();
                 return response()->json([
                     'status' => 200,
