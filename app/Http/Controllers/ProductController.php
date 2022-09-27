@@ -96,7 +96,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
         $request['slug'] = $this->generateRandomString();
         $request['user_id'] = Auth::id();
         $request['image'] = "mmm"; //a supprimer

@@ -27,6 +27,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (user.token != null) {
+            console.log('token: ',user.token)
             setInterval(() => {
                 apiClient
                     .get("user", {
