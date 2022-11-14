@@ -19,6 +19,8 @@ const Register = () => {
     const navigate = useNavigate();
     const [selected, setSelected] = useState([]);
     const [options, setOptions] = useState([]);
+    const [iclasse, setClasse] = useState('fa-eye-slash')
+    const [itype, settype] = useState('password')
 
     useEffect(()=>{
       apiClient
@@ -140,8 +142,26 @@ const Register = () => {
 
                         <div className="input-field">
                             <i className="fas fa-lock"></i>
+                            <i
+                                className={`fa-solid ${iclasse}`}
+                                style={{
+                                    position: "absolute",
+                                    right: "8%",
+                                    top: "0",
+                                }}
+                                onClick={(e)=>{
+                                    e.preventDefault()
+                                    if(iclasse != 'fa-eye'){
+                                        setClasse('fa-eye')
+                                        settype('text')
+                                    }else{
+                                        setClasse('fa-eye-slash')
+                                        settype('password')
+                                    }
+                                }}
+                            ></i>
                             <input
-                                type="password"
+                                type={itype}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Password"

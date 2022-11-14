@@ -284,9 +284,13 @@ class Controller extends BaseController
                     $tmp['reduction'] = $data->pourcentage;
                     $tmp['prix'] = $tmp['prix'] * (1 - $data->pourcentage/100);
                 }
+                //$temp = Product::orderBy('updated_at', 'desc')->get();
+                $temp = Product::inRandomOrder()->limit(4)->get();
+                $all = $this->listProduct($temp,"product");
                 return response()->json([
                     'status' => 200,
-                    'response' => $tmp
+                    'response' => $tmp,
+                    'all' => $all,
                 ]);
             }
             return response()->json([

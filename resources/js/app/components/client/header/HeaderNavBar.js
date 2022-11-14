@@ -88,6 +88,20 @@ const HeaderNavBar = () => {
                                     </span>
                                 </Link>
                             </li>
+                            <li className="nav-item ">
+                                <a
+                                    href="http://africadefis.com"
+                                    className="nav-link link link-dark px-2"
+                                >
+                                    <span
+                                        className="py-1"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target=".navbar-collapse.show"
+                                    >
+                                        CrowdFunding
+                                    </span>
+                                </a>
+                            </li>
                             <li className="nav-item">
                                 <Link
                                     to={url.apropos}
@@ -98,7 +112,7 @@ const HeaderNavBar = () => {
                                         data-bs-toggle="collapse"
                                         data-bs-target=".navbar-collapse.show"
                                     >
-                                        A propos
+                                        À propos
                                     </span>
                                 </Link>
                             </li>

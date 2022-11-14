@@ -68,7 +68,8 @@ const ProductCard = ({ data, idx }) => {
               <i
                 className="fa-regular fa-star-half-stroke"
                 style={{ color: "#fea569" }}
-              ></i>
+              ></i> <br/>
+              <span>{' '} en stock</span>
             </div>
           </div>
           <div className="d-flex justify-content-between align-items-center ">

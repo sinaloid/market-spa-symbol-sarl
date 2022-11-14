@@ -169,7 +169,7 @@ const RecommandationVente = () => {
                                     {
                                         listProduct.map((product, idx)=>{
                                             return(
-                                                <option key={idx} value={product.slug}>{product.libelle}</option>
+                                                <option key={idx} value={projet.slug}>{projet.libelle}</option>
                                             )
                                         })
                                     }
@@ -239,7 +239,7 @@ const RecommandationVente = () => {
                                     {
                                         listProduct.map((product, idx)=>{
                                             return(
-                                                <option key={idx} value={product.slug}>{product.libelle}</option>
+                                                <option key={idx} value={projet.slug}>{projet.libelle}</option>
                                             )
                                         })
                                     }
@@ -293,7 +293,7 @@ const RecommandationVente = () => {
                             return (
                                 <tr key={idx}>
                                     <td>{idx+1}</td>
-                                    <td>{data.product_nom}</td>
+                                    <td>{data.projet_nom}</td>
                                     <td>{data.type}</td>
                                     <td>
                                         <ButtonAction slug={data.id} dataEdite={data} setDataEdite={setDataEdite} onDelete={onDelete} />

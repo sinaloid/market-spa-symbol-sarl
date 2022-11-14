@@ -16,6 +16,8 @@ const Login = () => {
     const authCtx = useContext(AppContext);
     const { user, onUserChange } = authCtx;
     const navigate = useNavigate();
+    const [iclasse, setClasse] = useState('fa-eye-slash')
+    const [itype, settype] = useState('password')
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -73,9 +75,27 @@ const Login = () => {
                             />
                         </div>
                         <div className="input-field">
-                            <i className="fas fa-lock"></i>
+                            <i className="fas fa-lock-"></i>
+                            <i
+                                className={`fa-solid ${iclasse}`}
+                                style={{
+                                    position: "absolute",
+                                    right: "8%",
+                                    top: "0",
+                                }}
+                                onClick={(e)=>{
+                                    e.preventDefault()
+                                    if(iclasse != 'fa-eye'){
+                                        setClasse('fa-eye')
+                                        settype('text')
+                                    }else{
+                                        setClasse('fa-eye-slash')
+                                        settype('password')
+                                    }
+                                }}
+                            ></i>
                             <input
-                                type="password"
+                                type={itype}
                                 placeholder="Votre mots de passe"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}

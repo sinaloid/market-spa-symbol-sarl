@@ -153,15 +153,6 @@ important
   transform:  scaleX(1);
 }
 
-.link-click{
-  color: var(--primary-color);
-  text-decoration: none;
-}
-.link-click:hover{
-  text-decoration: underline;
-  text-decoration-color: var(--primary-color);
-}
-
 /*Chart height */
 
 .chart-height{
@@ -188,44 +179,40 @@ important
   line-height: 1.875rem;
 }
 .btn{
-  font-size: 0.975rem;
+  font-size: 0.875rem;
   font-weight: var(--font-weight-title);
   line-height: 1.5rem;
 }
 
 .btn-afdefis{
   background-color: var(--primary-color);
-  border: 2px solid var(--primary-color) !important;
+  border: 2px solid var(--primary-color);
   color: #fff;
 }
-.btn-afdefis:hover,.btn-afdefis:hover > i{
+.btn-afdefis:hover{
   background-color: #fff;
-  color: var(--primary-color) !important;
-}
-
-.btn-afdefis > i:hover{
-  color: var(--primary-color) !important;
+  color: var(--primary-color);
 }
 
 .btn-afdefis-primary{
   background-color: #fff;
-  border: 2px solid var(--primary-color) !important;
+  border: 2px solid var(--primary-color);
 }
 .btn-afdefis-primary:hover{
   background-color: #fff;
-  color: var(--primary-color) !important;
+  color: var(--primary-color);
 }
 
 .btn-afdefis-secondary{
   background-color: var(--secondary-color);
-  border: 2px solid var(--secondary-color) !important;
+  border: 2px solid var(--secondary-color);
   color: #fff;
 }
 
 .btn-afdefis-secondary:hover{
   background-color: #fff;
   border: 2px solid var(--secondary-color);
-  color: var(--secondary-color) !important;
+  color: var(--secondary-color);
 }
 
 .link{
@@ -271,31 +258,6 @@ important
 .delete-overflow{
   word-wrap: break-word !important;
 }
-.dropdown-menu {
-  width: 200px !important;
- /* height: 400px !important;*/
-}
-.dropdown:hover .dropdown-menu {
-  display: block;
-  margin-top: 0;
-  
-}
-
-.circle{
-  background-color: var(--primary-color);
-  color: #fff;
-  font-weight: bold;
-  font-size: 1.9rem;
-  width: 72px;
-  height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  border-radius: 50%;
-
-}
-
 
 @media screen and (max-width: 768px) {
 
