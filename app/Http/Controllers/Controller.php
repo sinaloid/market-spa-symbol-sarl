@@ -228,6 +228,7 @@ class Controller extends BaseController
                     "prix" => $tmp->prix,
                     "image" => ($tmp->images()->first() != null) ? $tmp->images()->first()->nom_image: '',
                     "slug" => $tmp->slug,
+                    "stock" => $tmp->stock,
                     "categorie" => $tmp->categorie->nom_categorie,
                     //"description" => $tmp->product->description,
                 ]);
@@ -243,6 +244,7 @@ class Controller extends BaseController
                     "prix" => $tmp->product->prix * ( 1 - $tmp->pourcentage/100),
                     "image" => ($tmp->product->images()->first() != null) ? $tmp->product->images()->first()->nom_image: '', 
                     "slug" => $tmp->product->slug,
+                    "stock" => $tmp->product->stock,
                     "categorie" => $tmp->product->categorie->nom_categorie,
                     //"description" => $tmp->product->description,
                 ]);
@@ -257,6 +259,7 @@ class Controller extends BaseController
                 "prix" => $tmp->product->prix,
                 "image" => ($tmp->product->images()->first() != null) ? $tmp->product->images()->first()->nom_image: '', 
                 "slug" => $tmp->product->slug,
+                "stock" => $tmp->product->stock,
                 "categorie" => $tmp->product->categorie->nom_categorie,
                 //"description" => $tmp->product->description,
             ]);
@@ -269,6 +272,8 @@ class Controller extends BaseController
     {
         try {
             $data = Product::where('slug',$slug)->first();
+            dd($request->user()->id);
+
             if(isset($data)){
                 $tmp = [
                     "libelle" => $data->libelle,
@@ -279,6 +284,22 @@ class Controller extends BaseController
                     "categorie" => $data->categorie->nom_categorie,
                     "description" => $data->description,
                 ];
+                $cmts = $data->commentaires()->get();
+
+                $commentaires = [];
+
+                if(isset($cmts)){
+                    foreach($cmts as $cm){
+
+                        array_push($commentaires,[
+                            "commentaire" => $cm->commentaire,
+                            "slug" => $cm->slug,
+                            "auteur" => $cm->user->nom,
+                            //"action" => $cm->user->id == Auth::user()->id ? true:false,
+                        ]);
+                    }
+                }
+
                 $data = $data->reduction()->first();
                 if(isset($data)){
                     $tmp['reduction'] = $data->pourcentage;
@@ -287,10 +308,12 @@ class Controller extends BaseController
                 //$temp = Product::orderBy('updated_at', 'desc')->get();
                 $temp = Product::inRandomOrder()->limit(4)->get();
                 $all = $this->listProduct($temp,"product");
+
                 return response()->json([
                     'status' => 200,
                     'response' => $tmp,
                     'all' => $all,
+                    'commentaires' => $commentaires
                 ]);
             }
             return response()->json([

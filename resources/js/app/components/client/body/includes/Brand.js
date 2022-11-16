@@ -17,10 +17,10 @@ const Brand = ({datas = []}) => {
           </a>
         </div>
       </div>
-      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+      <div className="row row-cols-3 row-cols-sm-4 row-cols-md-6 row-cols-lg-7 g-1">
         {datas.map((data, idx) => {
           return (
-            <div key={idx} className="col mx-auto">
+            <div key={idx} className="col mx-auto1">
               <div className="card shadow-sm p-1">
                 <img
                   className=""

@@ -36,8 +36,12 @@ const Home = () => {
             });
     }, []);
     return (
-        <main>
-            <Carousel />
+        <>
+            <div className="row">
+            <div className="col-12 col-md-10 col-lg-8 mx-auto p-0">
+                    <Carousel />
+            </div>
+            </div>
 
             <HowIsWork />
 
@@ -63,7 +67,7 @@ const Home = () => {
             {!appType.mobile && (
                 <DownloadApp />
             )}
-        </main>
+        </>
     );
 };
 

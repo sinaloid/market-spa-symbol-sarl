@@ -125,7 +125,6 @@ const ProcductTable = () => {
     };
 
     const setDataEdite = (data) => {
-        console.log(data);
         setLibelle(data.libelle);
         setImage(data.image);
         setSku(data.sku);
@@ -490,7 +489,7 @@ const ProcductTable = () => {
                                     className="form-control"
                                     //value={image}
                                     onChange={handleChange}
-                                    required
+                                    
                                 />
                             </div>
                             <div className="col-12">

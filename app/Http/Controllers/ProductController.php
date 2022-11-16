@@ -166,14 +166,53 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show($slug)
     {
         try {
-            $data = Product::where('slug',$slug)->get();
+            $data = Product::where('slug',$slug)->first();
+            //dd(Auth::user());
+
             if(isset($data)){
+                $tmp = [
+                    "libelle" => $data->libelle,
+                    "prix" => $data->prix,
+                    "image" => $data->images()->first()->nom_image,
+                    "reduction" => 0,
+                    "slug" => $data->slug,
+                    "categorie" => $data->categorie->nom_categorie,
+                    "description" => $data->description,
+                ];
+                $cmts = $data->commentaires()->get();
+
+                $commentaires = [];
+
+                if(isset($cmts)){
+                    foreach($cmts as $cm){
+
+                        array_push($commentaires,[
+                            "commentaire" => $cm->commentaire,
+                            "slug" => $cm->slug,
+                            "auteur" => $cm->user->nom,
+                            "action" => Auth::user() != null ? $cm->user->id == Auth::user()->id || Auth::user()->id == 2 : false,
+                        ]);
+                    }
+                }
+
+                $data = $data->reduction()->first();
+                if(isset($data)){
+                    $tmp['reduction'] = $data->pourcentage;
+                    $tmp['prix'] = $tmp['prix'] * (1 - $data->pourcentage/100);
+                }
+                //$temp = Product::orderBy('updated_at', 'desc')->get();
+                $temp = Product::inRandomOrder()->limit(4)->get();
+                $all = $this->listProduct($temp,"product");
+
                 return response()->json([
                     'status' => 200,
-                    'response' => $data
+                    'response' => $tmp,
+                    'all' => $all,
+                    'commentaires' => $commentaires
                 ]);
             }
             return response()->json([
@@ -201,6 +240,7 @@ class ProductController extends Controller
 
         $request['slug'] = $this->generateRandomString();
         $request['user_id'] = Auth::id();
+        $request['image'] = "mmm"; //a supprimer
         $request['categorie_id'] = Categorie::where('slug', $request['categorie_id'])->first();
 
         if($request['categorie_id'] == null){

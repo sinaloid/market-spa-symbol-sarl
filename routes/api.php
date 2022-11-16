@@ -12,6 +12,7 @@ use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\VenteRecommadationController;
 use App\Http\Controllers\MarqueController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 
@@ -56,7 +57,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
     Route::post('user/role', [Controller::class, 'userRole']);
     Route::get('productAll', [Controller::class, 'productAll']);
-    Route::get('prod/{slug}', [Controller::class, 'get']);
+    //Route::get('prod/{slug}', [Controller::class, 'get']);
     Route::get('detailcommandeAll/{slug}', [Controller::class, 'detailcommandeAll']);
     Route::get('faqAll', [Controller::class, 'faqAll']);
     Route::post('app/paiement', [Controller::class, 'paiement']);
@@ -80,6 +81,7 @@ Route::middleware(['auth:api'])->group(function () {
         'meilleureVR' => VenteRecommadationController::class,
         'marque' => MarqueController::class,
         'faq' => FaqController::class,
+        'commentaire' => CommentaireController::class,
     ]);
     Route::get('compteur', [Controller::class, 'getCompteur']);
     Route::get('reducterminer', [ReductionController::class, 'terminer']);
@@ -93,3 +95,5 @@ Route::middleware(['auth:api'])->group(function () {
 
 
 });
+
+Route::get('prod/{slug}', [ProductController::class, 'show']);

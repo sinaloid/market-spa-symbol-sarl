@@ -3,25 +3,33 @@ import { AppContext } from "../../../../context/context";
 import { Link, useParams } from "react-router-dom";
 import apiClient, { SITE_URL, urlImg } from "../../../../services/api";
 import url from "../../../../url";
-import { CKEditor } from "ckeditor4-react";
-import HomeProduitListCarousel from "../HomeProduitListCarousel";
 import HomeProduitList from "../HomeProduitList";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const ProductDetail = () => {
     const cartCtx = useContext(AppContext);
     const { cart, onCartChange } = cartCtx;
+    const { user, onUserChange } = cartCtx;
     const { id } = useParams();
 
     const [data, setDatas] = useState([]);
     const [prdt, setPrdt] = useState([]);
+    const [commentaire, setCommentaire] = useState([]);
+    const [listc, setListC] = useState([]);
+    const [refresh, setRefresh] = useState(0);
     useEffect(() => {
         apiClient
-            .get(`prod/${id}`)
+            .get(user.isAuth ? `product/${id}` : `prod/${id}`, {
+                headers: { Authorization: `Bearer ${user.token}` },
+            })
             .then((res) => {
                 setDatas(res.data.response);
-                    setPrdt(res.data.all);
+                setPrdt(res.data.all);
+                setListC(res.data.commentaires);
+                //console.log(res.data.commentaires);
                 if (res.status === 200) {
-                    
                     //console.log(res.data.all);
                 } else {
                 }
@@ -33,7 +41,7 @@ const ProductDetail = () => {
                     //notify("error", error.response.data.message);
                 }
             });
-    }, [window.location.pathname]);
+    }, [window.location.pathname, refresh]);
 
     let tabProduit = [];
     let findItem = false;
@@ -63,6 +71,58 @@ const ProductDetail = () => {
             onCartChange({ content: tabProduit, compteur: cart.compteur + 1 });
         }
     };
+
+    const onComment = (e) => {
+        e.preventDefault();
+        //console.log(commentaire);
+        apiClient
+            .post(
+                "commentaire",
+                {
+                    commentaire: commentaire,
+                    produitSlug: id,
+                },
+                {
+                    headers: { Authorization: `Bearer ${user.token}` },
+                }
+            )
+            .then((res) => {
+                //setDatas(res.data.response);
+                //console.log(res.data);
+                setRefresh(refresh + 1);
+                if (res.status === 200) {
+                    //console.log(res.data.all);
+                } else {
+                }
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 422) {
+                    //notify("error", error.response.data.message);
+                } else {
+                    //notify("error", error.response.data.message);
+                }
+            });
+    };
+
+    const deleteComment = (e, slug) => {
+        e.preventDefault()
+        apiClient
+        .delete(`commentaire/${slug}`, {
+            headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((res) => {
+            if (res.data.status === 200) {
+                //notify("success", res.data.response);
+                setRefresh(refresh + 1);
+            } else {
+                //notify("error", res.data.response);
+                setRefresh(refresh + 1);
+            }
+        })
+        .catch((error) => {
+           // notify("error", error.response.data.message);
+        });
+    }
     return (
         <div className="container mt-5 mb-5">
             <div className="row d-flex justify-content-center">
@@ -131,7 +191,7 @@ const ProductDetail = () => {
                                                         data.prix
                                                     ) + " FCFA"}
                                                 </small>
-                                                
+
                                                 {data.reduction && (
                                                     <span>
                                                         {data.reduction +
@@ -153,12 +213,12 @@ const ProductDetail = () => {
                                             Ajouter au panier
                                         </button>
                                         <span>
-                                        <i className="fa fa-heart text-muted mx-1"></i>
-                                        <i 
-                                            className="fa fa-share-alt text-muted mx-1"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#myModal"
-                                        ></i>
+                                            <i className="fa fa-heart text-muted mx-1"></i>
+                                            <i
+                                                className="fa fa-share-alt text-muted mx-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#myModal"
+                                            ></i>
                                         </span>
                                     </div>
                                 </div>
@@ -206,9 +266,9 @@ const ProductDetail = () => {
                                                             } else {
                                                                 window.open(
                                                                     "https://www.facebook.com/sharer/sharer.php?u=" +
-                                                                    SITE_URL +
-                                                                    "/produit/" +
-                                                                    id,
+                                                                        SITE_URL +
+                                                                        "/produit/" +
+                                                                        id,
                                                                     "facebook-share-dialog",
                                                                     "width=800,height=600"
                                                                 );
@@ -231,8 +291,8 @@ const ProductDetail = () => {
                                                                 "https://t.me/share/url?url=" +
                                                                     encodeURIComponent(
                                                                         SITE_URL +
-                                                                        "/produit/" +
-                                                                        id,
+                                                                            "/produit/" +
+                                                                            id
                                                                     ) +
                                                                     "&text=" +
                                                                     encodeURIComponent(
@@ -257,9 +317,9 @@ const ProductDetail = () => {
                                                             e.preventDefault();
                                                             window.open(
                                                                 "https://twitter.com/intent/tweet?url=" +
-                                                                SITE_URL +
-                                                                "/produit/" +
-                                                                id,
+                                                                    SITE_URL +
+                                                                    "/produit/" +
+                                                                    id,
                                                                 "width=800,height=600"
                                                             );
                                                         }}
@@ -280,8 +340,8 @@ const ProductDetail = () => {
                                                                 "https://www.linkedin.com/shareArticle?mini=true&summary=africadefis&title=Projet Crowfunding&url=" +
                                                                     encodeURIComponent(
                                                                         SITE_URL +
-                                                                        "/produit/" +
-                                                                        id
+                                                                            "/produit/" +
+                                                                            id
                                                                     ),
                                                                 "name",
                                                                 "width=800,height=600"
@@ -309,8 +369,8 @@ const ProductDetail = () => {
                                                                     "whatsapp://send?text=" +
                                                                         encodeURIComponent(
                                                                             SITE_URL +
-                                                                        "/produit/" +
-                                                                        id
+                                                                                "/produit/" +
+                                                                                id
                                                                         ),
                                                                     "name",
                                                                     "width=800,height=600"
@@ -320,8 +380,8 @@ const ProductDetail = () => {
                                                                     "https://web.whatsapp.com/send?text=" +
                                                                         encodeURIComponent(
                                                                             SITE_URL +
-                                                                        "/produit/" +
-                                                                        id
+                                                                                "/produit/" +
+                                                                                id
                                                                         ),
                                                                     "name",
                                                                     "width=800,height=600"
@@ -343,9 +403,9 @@ const ProductDetail = () => {
                                                             e.preventDefault();
                                                             window.open(
                                                                 "mailto:?subject=Projet Crowfunding&body=" +
-                                                                SITE_URL +
-                                                                "/produit/" +
-                                                                id
+                                                                    SITE_URL +
+                                                                    "/produit/" +
+                                                                    id
                                                             );
                                                         }}
                                                     ></i>
@@ -364,8 +424,8 @@ const ProductDetail = () => {
                                                             e.preventDefault();
                                                             navigator.clipboard.writeText(
                                                                 SITE_URL +
-                                                                        "/produit/" +
-                                                                        id
+                                                                    "/produit/" +
+                                                                    id
                                                             );
                                                         }}
                                                     ></i>
@@ -398,106 +458,114 @@ const ProductDetail = () => {
             </div>
             <div className="col-12 col-md-10 mx-auto mt-5">
                 <div className="row">
-                    <div className="card my-2">
-                        <div className="row">
-                            <div className="col-4 col-md-2 text-center pt-2">
-                                <img
-                                    className="circle"
-                                    src="https://source.unsplash.com/random/800x600/?product=1"
-                                    alt=""
-                                />
-                            </div>
-                            <div className="col-8 col-md-10 px-2">
-                                <p>
-                                    <span
-                                        className="text-bold"
-                                        style={{
-                                            fontSize: "1rem",
-                                        }}
-                                    >
-                                        Ouedraogo Salif
-                                    </span>{" "}
-                                    <br />
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Adipisci quaerat
-                                    architecto illo quis, eveniet atque officia
-                                    blanditiis ipsa rerum, accusantium quam
-                                    voluptatum cumque placeat odio velit labore!
-                                    Accusamus
-                                </p>
-                                <div>
-                                    <span>
-                                        <i className="fa-regular fa-clock"></i>{" "}
-                                        1h
-                                        {"  "}
-                                    </span>
-                                    {"  "}|
-                                    <span>
-                                        {"  "}
-                                        <i className="fa-sharp fa-regular fa-comment"></i>{" "}
-                                        Repondre{" "}
-                                    </span>
+                    {listc.map((lst, idx) => {
+                        return (
+                            <div key={idx} className="card my-2">
+                                <div className="row">
+                                    <div className="col-4 col-md-2 text-center pt-2">
+                                        <img
+                                            className="circle"
+                                            src="https://source.unsplash.com/random/800x600/?product=1"
+                                            alt=""
+                                        />
+                                    </div>
+                                    <div className="col-8 col-md-10 px-2">
+                                        <div>
+                                            <span
+                                                className="text-bold"
+                                                style={{
+                                                    fontSize: "1rem",
+                                                }}
+                                            >
+                                                {lst.auteur}
+                                            </span>{" "}
+                                            <br />
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html: lst.commentaire,
+                                                }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <span>
+                                                <i className="fa-regular fa-clock"></i>{" "}
+                                                1h
+                                                {"  "}
+                                            </span>
+                                            {"  "}|
+                                            <span>
+                                                {"  "}
+                                                <i className="fa-sharp fa-regular fa-comment"></i>{" "}
+                                                Repondre{" "}
+                                            </span>
+                                            {
+                                                lst.action ? <span type="button" onClick={(e) => deleteComment(e,lst.slug)}>
+                                                |<i className="fa-solid fa-trash" ></i>{" "}
+                                                Supprimer{" "}
+                                            </span> : null
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        );
+                    })}
+                </div>
+                {user.isAuth ? (
+                    <div className="col-12 mt-4">
+                        <hr />
+                        <CKEditor
+                            editor={ClassicEditor}
+                            data="<p>Entrez votre commentaire !</p>"
+                            onReady={(editor) => {
+                                editor.editing.view.change((writer) => {
+                                writer.setStyle(
+                                    "height",
+                                    "200px",
+                                    editor.editing.view.document.getRoot()
+                                );
+                                });
+                            }}
+                            onChange={(event, editor) => {
+                                const data = editor.getData();
+                                setCommentaire(data);
+                            }}
+                            /*onBlur={ ( event, editor ) => {
+                            console.log( 'Blur.', editor );
+                        } }
+                        onFocus={ ( event, editor ) => {
+                            console.log( 'Focus.', editor );
+                        } }*/
+                        />
+                        <div className="my-2 d-flex justify-content-center">
+                            <button
+                                className="btn btn-sm btn-afdefis"
+                                onClick={(e) => onComment(e)}
+                            >
+                                Commenter
+                            </button>
                         </div>
                     </div>
-                    <div className="card my-2">
-                        <div className="row">
-                            <div className="col-4 col-md-2  text-center pt-2">
-                                <img
-                                    className="circle"
-                                    src="https://source.unsplash.com/random/800x600/?product=1"
-                                    alt=""
-                                />
-                            </div>
-                            <div className="col-8 col-md-10 px-2">
-                                <p>
-                                    <span
-                                        className="text-bold"
-                                        style={{
-                                            fontSize: "1rem",
-                                        }}
-                                    >
-                                        Traore Ali
-                                    </span>{" "}
-                                    <br />
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Adipisci quaerat
-                                    architecto illo quis, eveniet atque officia
-                                    blanditiis ipsa rerum, accusantium quam
-                                    voluptatum cumque placeat odio velit labore!
-                                    Accusamus
-                                </p>
-                                <div>
-                                    <span>
-                                        <i className="fa-regular fa-clock"></i>{" "}
-                                        1h{" "}
-                                    </span>{" "}
-                                    |
-                                    <span>
-                                        {" "}
-                                        <i className="fa-sharp fa-regular fa-comment"></i>{" "}
-                                        Repondre{" "}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                ) : (
+                    <div className="col-12 mt-4">
+                        <p>
+                            <Link
+                                to="/connexion"
+                                className="link-click text-bold"
+                            >
+                                Connectez vous
+                            </Link>{" "}
+                            ou{" "}
+                            <Link
+                                to="/inscription"
+                                className="link-click text-bold"
+                            >
+                                inscrivez vous{" "}
+                            </Link>
+                            pour pouvoir faire des commentaires.
+                        </p>
                     </div>
-                </div>
-                <div className="col-12 mt-4">
-                    <hr />
-                    <CKEditor
-                        initData="<p>Entrez votre commentaire !</p>"
-                        onInstanceReady={() => {
-                            /*alert("Editor is ready!");*/
-                        }}
-                    />
-                    <div className="my-2 d-flex justify-content-center">
-                        <button className="btn btn-sm btn-afdefis">
-                            Commenter
-                        </button>
-                    </div>
-                </div>
+                )}
             </div>
         </div>
     );
